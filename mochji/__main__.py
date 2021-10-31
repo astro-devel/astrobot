@@ -5,7 +5,6 @@ from discord import __version__ as discordpy_version
 from mochji import __version__ as mochji_version
 from mochji import util
 from mochji.client import bot
-from mochji.client.bot import rlog
 
 global running_proc
 running_proc: int | None = None
@@ -15,11 +14,11 @@ def kill_client():
 
     # NOTE: in the future, preferably make this something like signal.SIG_DFL -> client.close() instead,
     # so client can catch signal and cleanup before dying, but for rn
-    # SIGKILL is fine while bot is still in it's infancy.
+    # SIGKILL is fine while bot is still in its infancy.
     os.kill(running_proc, signal.SIGKILL)
     running_proc = None
 
-print(f"mochjiBot v{mochji_version} REPL")
+print(f"mochjiBot v{mochji_version} REPL (discord.py v{discordpy_version})")
 while True:
     cmd = input("> ")
     match cmd:
@@ -39,9 +38,6 @@ while True:
                 print("Bot is running...")
             else:
                 print("Bot is not running...")
-        case "rlog" | "running_log":
-            for item in rlog:
-                print(item)
         case "purge_logs":
             for file in os.listdir("logs"):
                 os.remove(f"logs/{file}")
