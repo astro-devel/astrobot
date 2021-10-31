@@ -34,6 +34,11 @@ while True:
                 print("Bot is running...")
             else:
                 print("Bot is not running...")
+        case "bot_pid":
+            if running_proc:
+                print(f"Bot is running on PID: {running_proc}")
+            else:
+                print("Bot is not running...")
         case "purge_logs":
             for file in os.listdir("logs"):
                 os.remove(f"logs/{file}")
