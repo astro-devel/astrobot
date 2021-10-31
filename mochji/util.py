@@ -1,6 +1,5 @@
 from typing import NoReturn
 
-
 def help_menu() -> NoReturn:
     print("mochjiBot REPL commands:\n\
 \"help\" -> print this menu\n\

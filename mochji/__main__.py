@@ -11,11 +11,7 @@ running_proc: int | None = None
 
 def kill_client():
     global running_proc
-
-    # NOTE: in the future, preferably make this something like signal.SIG_DFL -> client.close() instead,
-    # so client can catch signal and cleanup before dying, but for rn
-    # SIGKILL is fine while bot is still in its infancy.
-    os.kill(running_proc, signal.SIGKILL)
+    os.kill(running_proc, signal.SIGTERM)
     running_proc = None
 
 print(f"mochjiBot v{mochji_version} REPL (discord.py v{discordpy_version})")

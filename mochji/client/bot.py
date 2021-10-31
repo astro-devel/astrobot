@@ -6,24 +6,36 @@ from discord.ext import commands
 from mochji.client.commands import Moderation
 from mochji.exceptions import MochjiEnvironmentVariableNotFound
 
-# TODO: 
+# TODO:
+#
+# Guide: 
+#   [-] -> In Progress
+#   [x] -> Completed
+#  
 # [-] moderation commands
-#       [x] ban
-#       [x] slowmode
-#       [x] unban
-#       [x] kick
-#       [ ] mute
-#       [-] blocked word list
-#           - implement into string parsing:
-#               - remove non-alphabetical chars before parse
+    #   [x] ban
+    #   [x] slowmode
+    #   [x] unban
+    #   [x] kick
+    #   [ ] mute
+    #   [x] blocked word list
 # [ ] reaction roles
+# [ ] UserInfo command (will translate discord.Member object into UserInfo embed)
+# [ ] user system in database
+    #   [ ] Moderation
+        #   [ ] number of mutes
+        #   [ ] number of kicks
+        #   [ ] number of warnings
+    #   [ ] Community
+        #   [ ] XP
+        #   [ ] Club
 # [-] embed
-#   [ ] implement function to convert response to embed before sending
+    #   [ ] reimplement every message as embed
     #   [x] embed on fail (red)
-    #   [ ] embed on success (green)
+    #   [x] embed on success (green)
 # [ ] Community Features:
-    # [ ] XP system (see https://discord.com/moderation/360058645954-323:-Usage-of-XP-Systems)
-    # [ ] Clubs
+    #   [ ] XP system (see https://discord.com/moderation/360058645954-323:-Usage-of-XP-Systems)
+    #   [ ] Clubs
 
 blocked_words = [
     "cummies"
