@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from astrobot.management import Management
 from astrobot.moderation import Moderation
+from astrobot.welcome import WelcomeWagon
 from astrobot.roles import Roles
 
 # TODO:
@@ -23,6 +24,7 @@ from astrobot.roles import Roles
     #   [x] blocked word list
 # [-] reaction roles
 # [ ] UserInfo command (will translate discord.Member object into UserInfo embed)
+# [ ] !time command for users current timezone
 # [ ] user system in database
     #   [ ] Moderation
         #   [ ] number of mutes
@@ -45,23 +47,30 @@ class MochjiActivity(discord.Activity):
         self.name = "playin wit ma willy"
 
 def start_client():
-    bot = commands.Bot(command_prefix='!',
+    if not os.environ.get("OBAMA_BOT"):
+        prefix = '!'
+    else:
+        prefix = '.'
+    bot = commands.Bot(command_prefix=prefix,
                     intents=discord.Intents.all(),
                     activity=MochjiActivity())
     bot.add_cog(Moderation(bot))
     bot.add_cog(Roles(bot))
     bot.add_cog(Management(bot))
+    bot.add_cog(WelcomeWagon(bot))
 
+    '''
     log_time = int(time.time())
     logger = logging.getLogger('discord')
     logger.setLevel(logging.DEBUG)
     handler = logging.FileHandler(filename=f'logs/{log_time}.log', encoding='utf-8', mode='w')
     handler.setFormatter(logging.Formatter('[%(asctime)s][ %(levelname)s ] %(name)s: %(message)s'))
     logger.addHandler(handler)
+    '''
 
     @bot.event
     async def on_ready():
-        print(f'Logged in as: {bot.user}')
+        print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
 
     bot.run(os.environ["BOT_TOKEN"])
 

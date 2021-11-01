@@ -15,13 +15,17 @@ class Roles(commands.Cog):
         }
         self.role_message_id = 0
 
-    @commands.command()
+    @commands.command(help="Get the ID of a custom server emoji. (mainly for use while implementing reaction roles.)", 
+                    brief="Get the ID of a custom server emoji.", 
+                    usage=":EMOJI_NAME:")
     async def get_emoji_id(self, ctx, emoji : discord.Emoji):
         await ctx.send(emoji.id)
 
-    @commands.command()
+    @commands.command(help="Only for use by kevinshome.", brief="Only for use by kevinshome.")
     @commands.has_permissions(administrator=True)
     async def init_roles(self, ctx):
+        # TODO: set myself as bot owner and add check to make sure invoking author is me
+        # otherwise return
         channel = self.bot.get_channel(os.environ["ROLE_CHANNEL_ID"])
         text = "React to recieve a role."
         embed = discord.Embed(title=text, colour=MochjiColor.white())

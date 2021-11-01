@@ -99,7 +99,7 @@ class Management(commands.Cog):
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(brief="Delete a given number of messages.", help="Delete a given number of messages.", usage="[AMOUNT]")
     @commands.has_permissions(manage_messages=True)
     async def delete(self, ctx, number: str):
         # TODO: add method to delete messages only from specific user
