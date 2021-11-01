@@ -1,2 +1,0 @@
-class MochjiEnvironmentVariableNotFound(Exception):
-    pass

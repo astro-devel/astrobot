@@ -2,7 +2,7 @@ from multiprocessing import Value
 import os
 import discord
 from discord.ext import commands
-from mochji.colors import MochjiColor
+from colors import MochjiColor
 
 class Roles(commands.Cog):
     def __init__(self, bot) -> None:

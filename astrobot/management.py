@@ -1,7 +1,7 @@
 import discord
 from discord import colour
 from discord.ext import commands
-from mochji.colors import MochjiColor
+from colors import MochjiColor
 
 class Management(commands.Cog):
     def __init__(self, bot) -> None:

@@ -3,9 +3,9 @@ import time
 import logging
 import discord
 from discord.ext import commands
-from mochji.client.management import Management
-from mochji.client.moderation import Moderation
-from mochji.client.roles import Roles
+from astrobot.management import Management
+from astrobot.moderation import Moderation
+from astrobot.roles import Roles
 
 # TODO:
 #
