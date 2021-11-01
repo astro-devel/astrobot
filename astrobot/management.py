@@ -126,6 +126,6 @@ class Management(commands.Cog):
     async def perms_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             # TODO: implement "else" catcher for if error is of different exception type
-            text = f"Sorry, you do not have permission to do that!"
+            text = f"You are not authorized to use this command!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed)

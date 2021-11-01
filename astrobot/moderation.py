@@ -45,6 +45,7 @@ class Moderation(commands.Cog):
     @commands.command(brief="Unban a user", help="Unban a given user.", usage="[user]#[discriminator]")
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member):
+        # BUG: does not send message after successful unban
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split("#")
         for ban_entry in banned_users:
@@ -65,7 +66,7 @@ class Moderation(commands.Cog):
     async def perms_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             # TODO: implement "else" catcher for if error is of different exception type
-            text = f"Sorry, you do not have permission to do that!"
+            text = f"You are not authorized to use this command!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed)
 

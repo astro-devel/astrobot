@@ -2,7 +2,10 @@ import os
 import time
 import logging
 import discord
+from discord import embeds
 from discord.ext import commands
+from astrobot import __version__ as astrobot_v
+from astrobot.colors import MochjiColor
 from astrobot.management import Management
 from astrobot.moderation import Moderation
 from astrobot.welcome import WelcomeWagon
@@ -14,32 +17,45 @@ from astrobot.roles import Roles
 #   [-] -> In Progress
 #   [x] -> Completed
 #
+# (FAR BACK BURNER)
+    #   [ ] last.fm integration
+    #   [ ] spotify integration
+        #   [ ] spud integration ??????
 # [ ] get DMs working  
 # [-] moderation commands
+        #   [ ] Consolidate error catchers into one file
+            #   [ ] delete error message after 10 seconds
     #   [x] ban
     #   [x] slowmode
     #   [x] unban
     #   [x] kick
-    #   [ ] mute
+    #   [ ] warn (requires DB)
+    #   [ ] mute (requires DB?)
     #   [x] blocked word list
 # [-] reaction roles
+    #   [ ] implement role channel and message ID in DB
 # [ ] UserInfo command (will translate discord.Member object into UserInfo embed)
 # [ ] !time command for users current timezone
 # [ ] user system in database
     #   [ ] Moderation
+            #   (NOTE: vic wants unauth atps to say "No peeking!")
+            #   "maybe if u wanna get into specifics, for example do !summary @[user] [mutes] then it lists the dates/durations/reasons"
         #   [ ] number of mutes
         #   [ ] number of kicks
         #   [ ] number of warnings
-    #   [ ] Community
-        #   [ ] XP
-        #   [ ] Club
-# [-] embed
-    #   [ ] reimplement every message as embed
+        #   [ ] user moderation summary
+    #   [ ] Community features
+        #   [ ] XP system (see https://discord.com/moderation/360058645954-323:-Usage-of-XP-Systems)
+        #   [ ] Economy system
+            #   [ ] random currency drops in random channels
+                #   i.e. “Dropped [random amount] twunkles! type !grab to take them before it disappears!”
+            #   [ ] certain types of currency -> different rarity levels (NOTE: talk more with v ab this during devel)
+            #   [ ] Games (i.e. blackjack, russian roulette)
+        #   [ ] Clubs
+# [x] embed
+    #   [x] reimplement every message as embed
     #   [x] embed on fail (red)
     #   [x] embed on success (green)
-# [ ] Community Features:
-    #   [ ] XP system (see https://discord.com/moderation/360058645954-323:-Usage-of-XP-Systems)
-    #   [ ] Clubs
 
 class MochjiActivity(discord.Activity):
     def __init__(self):
@@ -67,6 +83,15 @@ def start_client():
     handler.setFormatter(logging.Formatter('[%(asctime)s][ %(levelname)s ] %(name)s: %(message)s'))
     logger.addHandler(handler)
     '''
+
+    @bot.command()
+    async def version(ctx):
+        text = f"Current astrobot version is '{astrobot_v}'"
+        embed = discord.Embed(
+            title=text,
+            color=MochjiColor.white()
+        )
+        await ctx.send(embed=embed)
 
     @bot.event
     async def on_ready():
