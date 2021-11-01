@@ -1,18 +1,14 @@
-import string
 import discord
+from discord import colour
 from discord.ext import commands
 from mochji.colors import MochjiColor
 
-class Moderation(commands.Cog):
+class Management(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
-        self.blocked_words = [
-            "cummies"
-        ]
-
+    
     @commands.command(brief="Get slowmode status for current channel.", help="Get slowmode status for current channel.")
     async def slowmode_status(self, ctx):
-        # TODO: if possible, make this callable with just '!slowmode'
         slowmode: int = ctx.channel.slowmode_delay
         if slowmode == 0:
             text = "There is currently no active slowmode"
@@ -31,7 +27,6 @@ class Moderation(commands.Cog):
                 text = f"Current slowmode setting is: {slowmode} minute(s) {remainder} second(s)"
 
         elif slowmode >= 3600: # if slowmode is hours
-            # TODO: implement remainder logic
             seconds_remainder = slowmode % 60
             if seconds_remainder: # if remainder of seconds, remove from slowmode
                 slowmode -= seconds_remainder
@@ -104,58 +99,29 @@ class Moderation(commands.Cog):
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
 
-    # BUG 001: 
-    #   Affects: 
-    #       - All commands requiring DM to be sent after action
-    #   Overview:
-    #       - current dm method returns 403 - Forbidden
-    #           - (403 Forbidden (error code: 50007): Cannot send messages to this user)
-    #   Status:
-    #       - DM method currently commented out while other features are being tested/implemented
-    @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
-    @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member : discord.Member, *, reason = None):
-        await ctx.guild.ban(user= member, reason= reason)
-        text = f"Successfully banned user {member.name}#{member.discriminator}"
-        embed = discord.Embed(title=text, colour=MochjiColor.green())
-        await ctx.send(embed=embed)
-
-        # TODO: once DMs start working, change this to embed
-#        msg = f"You have been banned from {ctx.guild.name}\nReason: {reason}"
-#        await member.send(msg)
-
-    @commands.command(brief="Kick a user", help="Kick a given user.", usage="@[user] [reason]")
-    @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member : discord.Member, *, reason = None):
-        await ctx.guild.kick(user= member, reason= reason)
-        text = f"Successfully kicked user {member.name}#{member.discriminator}"
-        embed = discord.Embed(title=text, colour=MochjiColor.green())
-        await ctx.send(embed=embed)
-
-        # TODO: once DMs start working, change this to embed
-#        msg = f"You have been kicked from {ctx.guild.name}\nReason: {reason}"
-#        await member.send(msg)
-
-    @commands.command(brief="Unban a user", help="Unban a given user.", usage="[user]#[discriminator]")
-    @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, *, member):
-        banned_users = await ctx.guild.bans()
-        member_name, member_discriminator = member.split("#")
-        for ban_entry in banned_users:
-            user = ban_entry.user
-            if (user.name, user.discriminator) == (member_name, member_discriminator):
-                await ctx.guild.unban(user)
-                text = f"Successfully unbanned user {member.name}#{member.discriminator}"
-                embed = discord.Embed(title=text, colour=MochjiColor.green())
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def delete(self, ctx, number: str):
+        # TODO: add method to delete messages only from specific user
+        if number == "max":
+            number = 100
+        else:
+            try:
+                number = int(number)
+            except ValueError:
+                text = "Please specify the number of messages to delete, i.e. '!delete 5'"
+                embed = discord.Embed(title=text, colour=MochjiColor.red())
                 await ctx.send(embed=embed)
+                return
 
-                # TODO: once DMs start working, change this to embed
-#                msg = f"You have been unbanned from {ctx.guild.name}! Feel free to rejoin the server."
-#                await member.send(msg)
-
-    @ban.error
-    @unban.error
-    @kick.error
+        if number > 100:
+            text = "Sorry, the max number of messages is 100"
+            embed = discord.Embed(title=text, colour=MochjiColor.red())
+            await ctx.send(embed=embed)
+        else:
+            await ctx.channel.purge(limit=number+1)
+    
+    @delete.error
     @slowmode.error
     async def perms_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
@@ -163,15 +129,3 @@ class Moderation(commands.Cog):
             text = f"Sorry, you do not have permission to do that!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed)
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        # check message for blocked words
-        words = list(set(message.content.split()))
-        for word in words:
-            for char in word:
-                if char not in string.ascii_letters:
-                    word = word.replace(char, "")
-            if word in self.blocked_words:
-                await message.delete()
-                await message.channel.send("No! Bad Boy! Shut the fuck up with that shit!")

@@ -3,15 +3,17 @@ import time
 import logging
 import discord
 from discord.ext import commands
-from mochji.client.commands import Moderation
-from mochji.exceptions import MochjiEnvironmentVariableNotFound
+from mochji.client.management import Management
+from mochji.client.moderation import Moderation
+from mochji.client.roles import Roles
 
 # TODO:
 #
 # Guide: 
 #   [-] -> In Progress
 #   [x] -> Completed
-#  
+#
+# [ ] get DMs working  
 # [-] moderation commands
     #   [x] ban
     #   [x] slowmode
@@ -19,7 +21,7 @@ from mochji.exceptions import MochjiEnvironmentVariableNotFound
     #   [x] kick
     #   [ ] mute
     #   [x] blocked word list
-# [ ] reaction roles
+# [-] reaction roles
 # [ ] UserInfo command (will translate discord.Member object into UserInfo embed)
 # [ ] user system in database
     #   [ ] Moderation
@@ -37,10 +39,6 @@ from mochji.exceptions import MochjiEnvironmentVariableNotFound
     #   [ ] XP system (see https://discord.com/moderation/360058645954-323:-Usage-of-XP-Systems)
     #   [ ] Clubs
 
-blocked_words = [
-    "cummies"
-]
-
 class MochjiActivity(discord.Activity):
     def __init__(self):
         super().__init__()
@@ -51,6 +49,8 @@ def start_client():
                     intents=discord.Intents.all(),
                     activity=MochjiActivity())
     bot.add_cog(Moderation(bot))
+    bot.add_cog(Roles(bot))
+    bot.add_cog(Management(bot))
 
     log_time = int(time.time())
     logger = logging.getLogger('discord')
@@ -63,10 +63,6 @@ def start_client():
     async def on_ready():
         print(f'Logged in as: {bot.user}')
 
-    try:
-        bot.run(os.environ["BOT_TOKEN"])
-    except KeyError:
-        err = "Please define the environment variable 'BOT_TOKEN' with the bot's token. This can be found at \"https://discord.com/developers/applications/[ APPLICATION_ID ]/bot\""
-        raise MochjiEnvironmentVariableNotFound(err)
+    bot.run(os.environ["BOT_TOKEN"])
 
 
