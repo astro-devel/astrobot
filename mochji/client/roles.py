@@ -42,6 +42,8 @@ class Roles(commands.Cog):
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         if payload.message_id != self.role_message_id:
             return
+        if payload.member.id == self.bot.user.id:
+            return
         guild = self.bot.get_guild(payload.guild_id)
         if not guild:
             print("self.bot.get_guild -> None")
@@ -55,10 +57,7 @@ class Roles(commands.Cog):
         if not role:
             print("guild.get_role -> None")
             return
-        if payload.member.id == self.bot.owner_id:
-            pass
-        else:
-            await payload.member.add_roles(role)
+        await payload.member.add_roles(role)
     
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -68,6 +67,12 @@ class Roles(commands.Cog):
         if not guild:
             print("self.bot.get_guild -> None")
             return
+        member = guild.get_member(payload.user_id)
+        if member is None:
+            print("guild.get_member -> None")
+            return
+        if member.id == self.bot.user.id:
+            return
         try:
             role_id = self.roles_and_reactions[payload.emoji]
         except KeyError:
@@ -76,10 +81,6 @@ class Roles(commands.Cog):
         role = guild.get_role(role_id)
         if not role:
             print("guild.get_role -> None")
-            return
-        member = guild.get_member(payload.user_id)
-        if member is None:
-            print("guild.get_member -> None")
             return
         await member.remove_roles(role)
 
