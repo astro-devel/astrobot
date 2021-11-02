@@ -8,6 +8,7 @@ from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
 from astrobot.management import Management
 from astrobot.moderation import Moderation
+from astrobot.test import TestCommands
 from astrobot.welcome import WelcomeWagon
 from astrobot.roles import Roles
 
@@ -21,16 +22,17 @@ from astrobot.roles import Roles
     #   [ ] last.fm integration
     #   [ ] spotify integration
         #   [ ] spud integration ??????
-# [ ] get DMs working  
+# [x] get DMs working  
 # [-] moderation commands
         #   [ ] Consolidate error catchers into one file
             #   [ ] delete error message after 10 seconds
+    #   [ ] implement ban/kick/warn/mute count in database
     #   [x] ban
     #   [x] slowmode
     #   [x] unban
     #   [x] kick
-    #   [ ] warn (requires DB)
-    #   [ ] mute (requires DB?)
+    #   [ ] warn
+    #   [ ] mute
     #   [x] blocked word list
 # [-] reaction roles
     #   [ ] implement role channel and message ID in DB
@@ -63,18 +65,26 @@ class MochjiActivity(discord.Activity):
         self.name = "playin wit ma willy"
 
 def start_client():
-    if not os.environ.get("OBAMA_BOT"):
+    if not os.environ.get("DEVEL"):
         prefix = '!'
     else:
         prefix = '.'
     bot = commands.Bot(command_prefix=prefix,
                     intents=discord.Intents.all(),
                     activity=MochjiActivity())
+    if os.environ.get("DEVEL"):
+        # NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE
+            # WelcomeWagon currently in devel block due to bot currently being in devel
+            # MAKE FUCKING SURE TO REMOVE WelcomeWagon FROM THIS BLOCK WHEN PUSH TO PROD
+        # NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE TODO NOTE
+        bot.add_cog(WelcomeWagon(bot))
+        bot.add_cog(TestCommands(bot))
+
     bot.add_cog(Moderation(bot))
     bot.add_cog(Roles(bot))
     bot.add_cog(Management(bot))
-    bot.add_cog(WelcomeWagon(bot))
 
+    # TODO: remember to uncomment logger block when begin self-hosting bot
     '''
     log_time = int(time.time())
     logger = logging.getLogger('discord')

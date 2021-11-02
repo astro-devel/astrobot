@@ -9,11 +9,14 @@ class WelcomeWagon(commands.Cog):
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
-        channel: discord.TextChannel = self.bot.get_channel(self.welcome_channel)
-        text = f"Wellcum to the {channel.guild} server!"
+        title = f"Welcome to {member.guild}!"
+        description = f"\
+Visit GUIDELINES_CHANNEL_ID to view the server rules.\n\
+Then, check out ROLES_CHANNEL_ID to get yourself some fresh roles.\n\
+Finally, head on over to GENERAL_CHANNEL_ID and join in the conversation!"
         embed = discord.Embed(
-            title=text,
+            title=title,
+            description=description,
             color=MochjiColor.blue()
         )
-        await channel.send(member.mention)
-        await channel.send(embed=embed)
+        await member.send(embed=embed)

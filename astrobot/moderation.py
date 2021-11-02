@@ -1,5 +1,7 @@
 import string
 import discord
+from discord import embeds
+from discord import colour
 from discord.ext import commands
 from astrobot.colors import MochjiColor
 
@@ -21,26 +23,32 @@ class Moderation(commands.Cog):
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member : discord.Member, *, reason = None):
+        embed = discord.Embed(
+            title=f"You have been banned from {ctx.guild.name}",
+            description=f"Banned by: {ctx.author}\nBan Reason: {reason}",
+            colour=MochjiColor.red()
+        )
+        await member.send(embed=embed)
+
         await ctx.guild.ban(user= member, reason= reason)
         text = f"Successfully banned user {member.name}#{member.discriminator}"
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
-        # TODO: once DMs start working, change this to embed
-#        msg = f"You have been banned from {ctx.guild.name}\nReason: {reason}"
-#        await member.send(msg)
-
     @commands.command(brief="Kick a user", help="Kick a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member : discord.Member, *, reason = None):
+        embed = discord.Embed(
+            title=f"You have been kicked from {ctx.guild.name}",
+            description=f"Kicked by: {ctx.author}\nKick Reason: {reason}",
+            colour=MochjiColor.red()
+        )
+        await member.send(embed=embed)
+        
         await ctx.guild.kick(user= member, reason= reason)
         text = f"Successfully kicked user {member.name}#{member.discriminator}"
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
-
-        # TODO: once DMs start working, change this to embed
-#        msg = f"You have been kicked from {ctx.guild.name}\nReason: {reason}"
-#        await member.send(msg)
 
     @commands.command(brief="Unban a user", help="Unban a given user.", usage="[user]#[discriminator]")
     @commands.has_permissions(ban_members=True)
@@ -55,10 +63,6 @@ class Moderation(commands.Cog):
                 text = f"Successfully unbanned user {member.name}#{member.discriminator}"
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
-
-                # TODO: once DMs start working, change this to embed
-#                msg = f"You have been unbanned from {ctx.guild.name}! Feel free to rejoin the server."
-#                await member.send(msg)
 
     @ban.error
     @unban.error
