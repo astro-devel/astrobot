@@ -102,7 +102,6 @@ class Management(commands.Cog):
     @commands.command(brief="Delete a given number of messages.", help="Delete a given number of messages.", usage="[AMOUNT]")
     @commands.has_permissions(manage_messages=True)
     async def delete(self, ctx, number: str):
-        # TODO: add method to delete messages only from specific user
         if number == "max":
             number = 100
         else:
@@ -120,12 +119,3 @@ class Management(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.channel.purge(limit=number+1)
-    
-    @delete.error
-    @slowmode.error
-    async def perms_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            # TODO: implement "else" catcher for if error is of different exception type
-            text = f"You are not authorized to use this command!"
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
-            await ctx.send(ctx.author.mention, embed=embed)

@@ -24,8 +24,7 @@ class Roles(commands.Cog):
     @commands.command(help="Only for use by kevinshome.", brief="Only for use by kevinshome.")
     @commands.has_permissions(administrator=True)
     async def init_roles(self, ctx):
-        # TODO: set myself as bot owner and add check to make sure invoking author is me
-        # otherwise return
+        # TODO: use @commands.check and create check function to make sure cmd author is kevinshome 
         channel = self.bot.get_channel(os.environ["ROLE_CHANNEL_ID"])
         text = "React to recieve a role."
         embed = discord.Embed(title=text, colour=MochjiColor.white())
@@ -33,14 +32,6 @@ class Roles(commands.Cog):
         for emoji in self.roles_and_reactions:
             await msg.add_reaction(emoji)
         self.role_message_id = msg.id
-
-    @init_roles.error
-    async def perms_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            # TODO: implement "else" catcher for if error is of different exception type
-            text = f"You are not authorized to use this command!"
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
-            await ctx.send(ctx.author.mention, embed=embed)
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):

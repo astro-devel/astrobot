@@ -1,3 +1,4 @@
+from operator import is_
 import string
 import discord
 from discord import embeds
@@ -7,19 +8,27 @@ from astrobot.colors import MochjiColor
 
 class Moderation(commands.Cog):
     def __init__(self, bot) -> None:
-        self.bot = bot
+        self.bot: commands.Bot = bot
         self.blocked_words = [
             "cummies"
         ]
 
-    # BUG 001: 
-    #   Affects: 
-    #       - All commands requiring DM to be sent after action
-    #   Overview:
-    #       - current dm method returns 403 - Forbidden
-    #           - (403 Forbidden (error code: 50007): Cannot send messages to this user)
-    #   Status:
-    #       - DM method currently commented out while other features are being tested/implemented
+    @commands.command(brief="Warn a user", help="Warn a given user.", usage="@[user] [reason]")
+    @commands.has_permissions()
+    async def warn(self, ctx, member : discord.Member, *, reason = None, is_bot_invoked=False):
+        if is_bot_invoked:
+            invoker = self.bot.user
+        else:
+            invoker = ctx.author
+        embed = discord.Embed(
+            title=f"⚠️ Warning! ⚠️",
+            description=f"Server: {ctx.guild.name}\nWarned by: {invoker}\nReason: {reason}",
+            colour=MochjiColor.red()
+        )
+        if is_bot_invoked:
+            embed.set_footer(text="NOTE: This will not count against your official warnings tally.")
+        await member.send(embed=embed)
+
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member : discord.Member, *, reason = None):
@@ -64,19 +73,10 @@ class Moderation(commands.Cog):
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
 
-    @ban.error
-    @unban.error
-    @kick.error
-    async def perms_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            # TODO: implement "else" catcher for if error is of different exception type
-            text = f"You are not authorized to use this command!"
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
-            await ctx.send(ctx.author.mention, embed=embed)
-
     @commands.Cog.listener()
     async def on_message(self, message):
         # check message for blocked words
+        ctx: commands.Context = await self.bot.get_context(message)
         words = list(set(message.content.split()))
         for word in words:
             word: str = word.lower()
@@ -85,4 +85,4 @@ class Moderation(commands.Cog):
                     word = word.replace(char, "")
             if word in self.blocked_words:
                 await message.delete()
-                await message.channel.send("No! Bad Boy! Shut the fuck up with that shit!")
+                await self.warn(ctx, message.author, reason=f"`{word}` is a forbidden word. Watch your language!", is_bot_invoked=True)
