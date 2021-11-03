@@ -16,8 +16,8 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Warn a user", help="Warn a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member : discord.Member, *, reason = None, is_bot_invoked=False, as_dm=True):
-        if is_bot_invoked:
+    async def warn(self, ctx, member : discord.Member, *, reason = None, bot_invoked=False, as_dm=True):
+        if bot_invoked:
             invoker = self.bot.user
         else:
             invoker = ctx.author
@@ -28,7 +28,7 @@ class Moderation(commands.Cog):
             description=f"Server: {ctx.guild.name}\nWarned by: {invoker}\nReason: {reason}",
             colour=MochjiColor.orange()
         )
-        if is_bot_invoked:
+        if bot_invoked:
             embed.set_footer(text="NOTE: This will not count against your official warnings tally.")
         try:
             await member.send(embed=embed)
@@ -46,7 +46,25 @@ class Moderation(commands.Cog):
             title=f"Warned {member.name}\nReason: {reason}",
             colour=MochjiColor.green()
         )
-        await ctx.send(embed=embed, delete_after=5)
+        if not bot_invoked: # no need to send a warn_success if automod
+            await ctx.send(embed=embed, delete_after=5)
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def get_bans(self, ctx):
+        bans = await ctx.guild.bans()
+        list = ""
+        counter = 1
+        for ban in bans:
+            list += f"{counter}. {ban.user} ({ban.reason if ban.reason else 'No reason given'})\n"
+            counter += 1
+        embed = discord.Embed(
+            title = "Banned Users",
+            description = list,
+            colour = MochjiColor.black()
+        )
+        await ctx.send(embed=embed)
+
 
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
@@ -84,18 +102,27 @@ class Moderation(commands.Cog):
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Unban a user", help="Unban a given user.", usage="[user]#[discriminator]")
+    @commands.command(brief="Unban a user", help="Unban a given user.", usage="[number] | [user]#[discriminator]")
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, *, member):
-        banned_users = await ctx.guild.bans()
-        member_name, member_discriminator = member.split("#")
-        for ban_entry in banned_users:
-            user = ban_entry.user
-            if (user.name, user.discriminator) == (member_name, member_discriminator):
-                await ctx.guild.unban(user)
-                text = f"Successfully unbanned user {user.name}#{user.discriminator}"
-                embed = discord.Embed(title=text, colour=MochjiColor.green())
-                await ctx.send(embed=embed)
+    async def unban(self, ctx, *, member: int | str):
+        if isinstance(member, int):
+            bans = await ctx.guild.bans()
+            _unban = bans[member-1].user
+            await ctx.guild.unban(_unban)
+            text = f"Successfully unbanned user {_unban}"
+            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            await ctx.send(embed=embed)
+        elif isinstance(member, str):
+            banned_users = await ctx.guild.bans()
+            member_name, member_discriminator = member.split("#")
+            for ban_entry in banned_users:
+                user = ban_entry.user
+                if (user.name, user.discriminator) == (member_name, member_discriminator):
+                    await ctx.guild.unban(user)
+                    text = f"Successfully unbanned user {user}"
+                    embed = discord.Embed(title=text, colour=MochjiColor.green())
+                    await ctx.send(embed=embed)
+        
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -109,4 +136,4 @@ class Moderation(commands.Cog):
                     word = word.replace(char, "")
             if word in self.blocked_words:
                 await message.delete()
-                await self.warn(ctx, message.author, reason=f"`{word}` is a forbidden word. Watch your language!", is_bot_invoked=True)
+                await self.warn(ctx, message.author, reason=f"`{word}` is a forbidden word. Watch your language!", bot_invoked=True)

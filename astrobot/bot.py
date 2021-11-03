@@ -10,6 +10,7 @@ from astrobot.error import ErrorHandler
 from astrobot.management import Management
 from astrobot.moderation import Moderation
 from astrobot.test import TestCommands
+from astrobot.time import TimeStuffs
 from astrobot.welcome import WelcomeWagon
 from astrobot.roles import Roles
 
@@ -34,6 +35,7 @@ def start_client():
         # cog(s) that should NOT be enabled during devel
         bot.add_cog(WelcomeWagon(bot))
 
+    bot.add_cog(TimeStuffs(bot))
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
     bot.add_cog(Roles(bot))
@@ -70,6 +72,7 @@ def start_client():
             return
         embed = discord.Embed(
             title=f"Successfully deleted all my messages to you.",
+            footer="NOTE: this does not affect your server warn/kick counts.",
             color=MochjiColor.green()
         )
         await ctx.send(embed=embed)
