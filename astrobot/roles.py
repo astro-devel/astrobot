@@ -3,6 +3,7 @@ import os
 import discord
 from discord.ext import commands
 from astrobot.colors import MochjiColor
+from astrobot import checks
 
 class Roles(commands.Cog):
     def __init__(self, bot) -> None:
@@ -16,15 +17,15 @@ class Roles(commands.Cog):
         self.role_message_id = 0
 
     @commands.command(help="Get the ID of a custom server emoji. (mainly for use while implementing reaction roles.)", 
-                    brief="Get the ID of a custom server emoji.", 
+                    brief="Get the ID of a custom server emoji", 
                     usage=":EMOJI_NAME:")
     async def get_emoji_id(self, ctx, emoji : discord.Emoji):
         await ctx.send(emoji.id)
 
-    @commands.command(help="Only for use by kevinshome.", brief="Only for use by kevinshome.")
+    @commands.command(help="Only for use by kevinshome", brief="Only for use by kevinshome.")
     @commands.has_permissions(administrator=True)
+    @commands.check(checks.is_kevinshome)
     async def init_roles(self, ctx):
-        # TODO: use @commands.check and create check function to make sure cmd author is kevinshome 
         channel = self.bot.get_channel(os.environ["ROLE_CHANNEL_ID"])
         text = "React to recieve a role."
         embed = discord.Embed(title=text, colour=MochjiColor.white())

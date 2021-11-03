@@ -7,7 +7,7 @@ class Management(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
     
-    @commands.command(brief="Get slowmode status for current channel.", help="Get slowmode status for current channel.")
+    @commands.command(brief="Get slowmode status for current channel", help="Get slowmode status for current channel.")
     async def slowmode_status(self, ctx):
         slowmode: int = ctx.channel.slowmode_delay
         if slowmode == 0:
@@ -45,7 +45,7 @@ class Management(commands.Cog):
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
-    @commands.command(brief="Set slowmode in current channel.", help="Set slowmode in current channel.", usage="[SEC]s | [MIN]m | [HOUR]h | off")
+    @commands.command(brief="Set slowmode in current channel", help="Set slowmode in current channel.", usage="[SEC]s | [MIN]m | [HOUR]h | off")
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx, time: str):
         match time[-1]:
@@ -99,7 +99,7 @@ class Management(commands.Cog):
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
 
-    @commands.command(brief="Delete a given number of messages.", help="Delete a given number of messages.", usage="[AMOUNT]")
+    @commands.command(brief="Delete a given number of messages", help="Delete a given number of messages.", usage="[AMOUNT]")
     @commands.has_permissions(manage_messages=True)
     async def delete(self, ctx, number: str):
         if number == "max":

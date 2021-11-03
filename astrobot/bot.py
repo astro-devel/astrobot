@@ -49,12 +49,28 @@ def start_client():
     logger.addHandler(handler)
     '''
 
-    @bot.command()
+    @bot.command(brief="Return bot version", help="Return bot version.")
     async def version(ctx):
         text = f"Current astrobot version is '{astrobot_v}'"
         embed = discord.Embed(
             title=text,
             color=MochjiColor.white()
+        )
+        await ctx.send(embed=embed)
+    
+    @bot.command(brief="Delete all DMs from bot", help="Delete all DMs recieved from bot.")
+    async def delete_dm_history(ctx):
+        await ctx.author.create_dm()
+        channel: discord.DMChannel | None = ctx.author.dm_channel
+        if channel:
+            async for message in channel.history():
+                if message.author == bot.user:
+                    await message.delete()
+        else:
+            return
+        embed = discord.Embed(
+            title=f"Successfully deleted all my messages to you.",
+            color=MochjiColor.green()
         )
         await ctx.send(embed=embed)
 
