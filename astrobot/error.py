@@ -2,12 +2,12 @@ import os
 import discord
 from discord.ext import commands
 from astrobot.colors import MochjiColor
-from astrobot import moderation
 
 
 class ErrorHandler(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
+        self.emojis = None
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
@@ -18,16 +18,16 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
         elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.CheckFailure):
-            text = "You are not authorized to use this command!"
+            text = f"{await self.emojis.error()} You are not authorized to use this command!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
             return
         elif isinstance(error, commands.BotMissingPermissions):
-            text = "Sorry, I'm not allowed to do that here. :("
+            text = f"{await self.emojis.error()} Sorry, I'm not allowed to do that here. :("
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
             return
-        text = "Uncaught error occured. Please try again."
+        text = f"{await self.emojis.error()} Uncaught error occured. Hopefully this will help:"
         err_type = str(type(error)).split('.')[-1].replace("'", "")
         err = f"<{err_type} {error}"
         embed = discord.Embed(
@@ -39,3 +39,7 @@ class ErrorHandler(commands.Cog):
             await ctx.send(ctx.author.mention, embed=embed)
         else:
             await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.emojis = self.bot.get_cog('MochjiMojis')

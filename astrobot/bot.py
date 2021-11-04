@@ -6,18 +6,20 @@ from discord import embeds
 from discord.ext import commands
 from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
+from astrobot.emojis import MochjiMojis
 from astrobot.error import ErrorHandler
 from astrobot.management import Management
 from astrobot.moderation import Moderation
 from astrobot.test import TestCommands
 from astrobot.time import TimeStuffs
+from astrobot.user import UserInfo
 from astrobot.welcome import WelcomeWagon
 from astrobot.roles import Roles
 
 class MochjiActivity(discord.Activity):
     def __init__(self):
         super().__init__()
-        self.name = "playin wit ma willy"
+        self.name = "with your mom"
 
 def start_client():
     if not os.environ.get("DEVEL"):
@@ -29,12 +31,14 @@ def start_client():
                     activity=MochjiActivity())
 
     if os.environ.get("DEVEL"):
-        # cog(s) to only be enabled for devel
+        # cog(s) that should ONLY be enabled during devel
         bot.add_cog(TestCommands(bot))
     else:
         # cog(s) that should NOT be enabled during devel
         bot.add_cog(WelcomeWagon(bot))
 
+    bot.add_cog(UserInfo(bot))
+    bot.add_cog(MochjiMojis(bot))
     bot.add_cog(TimeStuffs(bot))
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
@@ -71,7 +75,7 @@ def start_client():
         else:
             return
         embed = discord.Embed(
-            title=f"Successfully deleted all my messages to you.",
+            title=f"{await bot.get_cog('MochjiMojis').success()} Successfully deleted all my messages to you.",
             footer="NOTE: this does not affect your server warn/kick counts.",
             color=MochjiColor.green()
         )

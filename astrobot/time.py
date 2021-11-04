@@ -10,6 +10,7 @@ class TimeStuffs(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
         self.timezones = zoneinfo.available_timezones()
+        self.emojis = None
     
     @commands.command()
     async def time(self, ctx, tz: str):
@@ -40,3 +41,6 @@ class TimeStuffs(commands.Cog):
         )
         await ctx.send(embed=embed)
     '''
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.emojis = self.bot.get_cog('MochjiMojis')

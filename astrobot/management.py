@@ -6,6 +6,7 @@ from astrobot.colors import MochjiColor
 class Management(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
+        self.emojis = None
     
     @commands.command(brief="Get slowmode status for current channel", help="Get slowmode status for current channel.")
     async def slowmode_status(self, ctx):
@@ -54,12 +55,12 @@ class Management(commands.Cog):
                 try:
                     seconds = int(seconds)
                 except ValueError:
-                    text = f"Unknown argument: '{time}', see '!help slowmode'"
+                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
                     return
                 await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"Set the slowmode delay in this channel to {seconds} seconds."
+                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {seconds} seconds."
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
             case 'm':
@@ -67,12 +68,12 @@ class Management(commands.Cog):
                 try:
                     seconds = int(minutes) * 60
                 except ValueError:
-                    text = f"Unknown argument: '{time}', see '!help slowmode'"
+                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
                     return
                 await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"Set the slowmode delay in this channel to {minutes} minute(s)."
+                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {minutes} minute(s)."
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
             case 'h':
@@ -80,22 +81,22 @@ class Management(commands.Cog):
                 try:
                     seconds = int(hours) * 60 * 60
                 except ValueError:
-                    text = f"Unknown argument: '{time}', see '!help slowmode'"
+                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
                     return
                 await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"Set the slowmode delay in this channel to {hours} hour(s)."
+                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {hours} hour(s)."
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
             case _:
                 if time == "off":
                     await ctx.channel.edit(slowmode_delay=0)
-                    text = "Removed slowmode delay from this channel."
+                    text = f"{await self.emojis.success()} Removed slowmode delay from this channel."
                     embed = discord.Embed(title=text, colour=MochjiColor.green())
                     await ctx.send(embed=embed)
                 else:
-                    text = f"Unknown argument '{time}', see '!help slowmode'"
+                    text = f"{await self.emojis.success()} Unknown argument '{time}', see '!help slowmode'"
                     embed = discord.Embed(title=text, colour=MochjiColor.red())
                     await ctx.send(embed=embed)
 
@@ -108,14 +109,18 @@ class Management(commands.Cog):
             try:
                 number = int(number)
             except ValueError:
-                text = "Please specify the number of messages to delete, i.e. '!delete 5'"
+                text = f"{await self.emojis.error()} Please specify the number of messages to delete, i.e. '!delete 5'"
                 embed = discord.Embed(title=text, colour=MochjiColor.red())
                 await ctx.send(embed=embed)
                 return
 
         if number > 100:
-            text = "Sorry, the max number of messages is 100"
+            text = f"{await self.emojis.error()} Sorry, the max number of messages is 100"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(embed=embed)
         else:
             await ctx.channel.purge(limit=number+1)
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.emojis = self.bot.get_cog('MochjiMojis')

@@ -10,6 +10,7 @@ from astrobot.colors import MochjiColor
 class Moderation(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: commands.Bot = bot
+        self.emojis = None
         self.blocked_words = [
             "cummies"
         ]
@@ -24,7 +25,7 @@ class Moderation(commands.Cog):
 
         # send warn Message to user
         embed = discord.Embed(
-            title=f"⚠️ Warning! ⚠️",
+            title=f"{await self.emojis.warning()} Warning! {await self.emojis.warning()}",
             description=f"Server: {ctx.guild.name}\nWarned by: {invoker}\nReason: {reason}",
             colour=MochjiColor.orange()
         )
@@ -34,7 +35,7 @@ class Moderation(commands.Cog):
             await member.send(embed=embed)
         except discord.errors.Forbidden: # if user only accepts DMs from friends, warn them in server channel
             embed = discord.Embed(
-                title=f"⚠️ Warning! ⚠️",
+                title=f"{await self.emojis.warning()} Warning! {self.emojis.warning()}",
                 description=f"Warned by: {invoker}\nReason: {reason}",
                 colour=MochjiColor.orange()
             )
@@ -43,7 +44,7 @@ class Moderation(commands.Cog):
 
         # send success message in channel
         embed = discord.Embed(
-            title=f"Warned {member.name}\nReason: {reason}",
+            title=f"{await self.emojis.success()} Warned {member.name}\nReason: {reason}",
             colour=MochjiColor.green()
         )
         if not bot_invoked: # no need to send a warn_success if automod
@@ -80,7 +81,7 @@ class Moderation(commands.Cog):
             pass
 
         await ctx.guild.ban(user= member, reason= reason)
-        text = f"Successfully banned user {member.name}#{member.discriminator}"
+        text = f"{await self.emojis.success()} Successfully banned user {member.name}#{member.discriminator}"
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
@@ -98,28 +99,36 @@ class Moderation(commands.Cog):
             pass
         
         await ctx.guild.kick(user= member, reason= reason)
-        text = f"Successfully kicked user {member.name}#{member.discriminator}"
-        embed = discord.Embed(title=text, colour=MochjiColor.green())
+        text = f"{await self.emojis.success()} Successfully kicked user {member.name}#{member.discriminator}"
+        embed = discord.Embed(description=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
+
+    def is_int_convertable(self, item):
+        try:
+            int(item)
+            return True
+        except ValueError:
+            return False
 
     @commands.command(brief="Unban a user", help="Unban a given user.", usage="[number] | [user]#[discriminator]")
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, *, member: int | str):
-        if isinstance(member, int):
+    async def unban(self, ctx, *, member):
+        if self.is_int_convertable(member):
+            member = int(member)
             bans = await ctx.guild.bans()
             _unban = bans[member-1].user
             await ctx.guild.unban(_unban)
-            text = f"Successfully unbanned user {_unban}"
+            text = f"{await self.emojis.success()} Successfully unbanned user {_unban}"
             embed = discord.Embed(title=text, colour=MochjiColor.green())
             await ctx.send(embed=embed)
-        elif isinstance(member, str):
+        else:
             banned_users = await ctx.guild.bans()
             member_name, member_discriminator = member.split("#")
             for ban_entry in banned_users:
                 user = ban_entry.user
                 if (user.name, user.discriminator) == (member_name, member_discriminator):
                     await ctx.guild.unban(user)
-                    text = f"Successfully unbanned user {user}"
+                    text = f"{await self.emojis.success()} Successfully unbanned user {user}"
                     embed = discord.Embed(title=text, colour=MochjiColor.green())
                     await ctx.send(embed=embed)
         
@@ -136,4 +145,8 @@ class Moderation(commands.Cog):
                     word = word.replace(char, "")
             if word in self.blocked_words:
                 await message.delete()
-                await self.warn(ctx, message.author, reason=f"`{word}` is a forbidden word. Watch your language!", bot_invoked=True)
+                await self.warn(ctx, message.author, reason=f"{self.emojis.warning()} `{word}` is a forbidden word. Watch your language!", bot_invoked=True)
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.emojis = self.bot.get_cog('MochjiMojis')
