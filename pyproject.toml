@@ -1,12 +1,15 @@
 [tool.poetry]
 name = "astrobot"
-version = "2021.11.4"
+version = "2021.11.9"
 description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 py-cord = "^1.7.3"
+SQLAlchemy = "^1.4.26"
+psycopg2-binary = "^2.9.1"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

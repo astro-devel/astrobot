@@ -2,8 +2,8 @@ import os
 import time
 import logging
 import discord
-from discord import embeds
 from discord.ext import commands
+
 from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
 from astrobot.emojis import MochjiMojis

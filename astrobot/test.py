@@ -1,4 +1,5 @@
 import discord
+from discord import embeds
 from discord.ext import commands
 from astrobot.colors import MochjiColor
 
@@ -24,3 +25,15 @@ class TestCommands(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.emojis = self.bot.get_cog('MochjiMojis')
+    
+
+    @commands.command()
+    async def bold_text_embed(self, ctx, message):
+        embed = discord.Embed(
+            title=f"**{message}**"
+        )
+        await ctx.send(embed=embed)
+        embed = discord.Embed(
+            title=f"{message}"
+        )
+        await ctx.send(embed=embed)

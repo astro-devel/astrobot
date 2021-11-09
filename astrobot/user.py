@@ -7,6 +7,10 @@ class UserInfo(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
     
+    #@commands.command()
+    async def whois(self, ctx, member: discord.Member):
+        return
+
     @commands.command()
     async def whoami(self, ctx):
         member: discord.Member | discord.ClientUser = ctx.author
