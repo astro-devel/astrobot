@@ -5,7 +5,7 @@ description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.6"
 py-cord = "^1.7.3"
 SQLAlchemy = "^1.4.26"
 psycopg2-binary = "^2.9.1"
@@ -15,5 +15,5 @@ requests = "^2.26.0"
 pytest = "^5.2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry>=1.1.11"]
+build-backend = "poetry.masonry.api"
