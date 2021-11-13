@@ -6,47 +6,31 @@ from discord.ext import commands
 
 from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
-from astrobot.emojis import MochjiMojis
-from astrobot.error import ErrorHandler
-from astrobot.management import Management
-from astrobot.moderation import Moderation
-from astrobot.test import TestCommands
-from astrobot.time import TimeStuffs
-from astrobot.user import UserInfo
-from astrobot.welcome import WelcomeWagon
-from astrobot.roles import Roles
+from astrobot.init_cogs import init_cogs
 
 class MochjiActivity(discord.Activity):
+    # init bot activity status (BROKEN)
     def __init__(self):
         super().__init__()
         self.name = "with your mom"
 
 def start_client():
     if not os.environ.get("DEVEL"):
-        prefix = '!'
+        prefix = '!' # use ! prefix in production (astrobot)
     else:
-        prefix = '.'
+        prefix = '.' # use . prefix in development (ObamaBot)
+    
+    # initialize bot object
     bot = commands.Bot(command_prefix=prefix,
                     intents=discord.Intents.all(),
                     activity=MochjiActivity())
 
-    if os.environ.get("DEVEL"):
-        # cog(s) that should ONLY be enabled during devel
-        bot.add_cog(TestCommands(bot))
-    else:
-        # cog(s) that should NOT be enabled during devel
-        bot.add_cog(WelcomeWagon(bot))
-
-    bot.add_cog(UserInfo(bot))
-    bot.add_cog(MochjiMojis(bot))
-    bot.add_cog(TimeStuffs(bot))
-    bot.add_cog(ErrorHandler(bot))
-    bot.add_cog(Moderation(bot))
-    bot.add_cog(Roles(bot))
-    bot.add_cog(Management(bot))
+    # initialize all bot cogs
+    init_cogs(bot)
 
     # TODO: remember to uncomment logger block when begin self-hosting bot
     '''
+    # initalize pycord logger
     log_time = int(time.time())
     logger = logging.getLogger('discord')
     logger.setLevel(logging.DEBUG)
@@ -57,6 +41,7 @@ def start_client():
 
     @bot.command(brief="Return bot version", help="Return bot version.")
     async def version(ctx):
+        '''Return current version bot is running'''
         text = f"Current astrobot version is '{astrobot_v}'"
         embed = discord.Embed(
             title=text,
@@ -66,13 +51,19 @@ def start_client():
     
     @bot.command(brief="Delete all DMs from bot", help="Delete all DMs recieved from bot.")
     async def delete_dm_history(ctx):
-        await ctx.author.create_dm()
+        '''Delete all DMs from bot'''
+        await ctx.author.create_dm() # attempt to open DMChannel with user
         channel: discord.DMChannel | None = ctx.author.dm_channel
-        if channel:
+        if channel: # if user is able to recieve DMs
             async for message in channel.history():
                 if message.author == bot.user:
+                    # there's gotta be a better way to do this bc what
+                    # ends up happening is there are a lot of user messages and
+                    # deletion thread starts getting hung up
+                    #
+                    # TODO: implement method for auto-skipping over known non-bot msgs
                     await message.delete()
-        else:
+        else: # if user is not able to recieve DMs
             return
         embed = discord.Embed(
             title=f"{await bot.get_cog('MochjiMojis').success()} Successfully deleted all my messages to you.",
