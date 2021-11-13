@@ -13,7 +13,7 @@ class UserInfo(commands.Cog):
 
     @commands.command()
     async def whoami(self, ctx):
-        member: discord.Member | discord.ClientUser = ctx.author
+        member = ctx.author
         name = f"{member.name}#{member.discriminator}"
         joined_guild_at = member.joined_at.date()
         joined_discord_at = member.created_at.date()

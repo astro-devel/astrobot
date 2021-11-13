@@ -49,56 +49,62 @@ class Management(commands.Cog):
     @commands.command(brief="Set slowmode in current channel", help="Set slowmode in current channel.", usage="[SEC]s | [MIN]m | [HOUR]h | off")
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx, time: str):
-        match time[-1]:
-            case 's':
-                seconds = time[:-1]
-                try:
-                    seconds = int(seconds)
-                except ValueError:
-                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
-                    embed = discord.Embed(title=text, colour=MochjiColor.red())
-                    await ctx.send(embed=embed)
-                    return
-                await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {seconds} seconds."
+        _increment = time[-1]
+        if _increment == 's':
+            # implement slowmode in seconds
+            seconds = time[:-1]
+            try:
+                seconds = int(seconds)
+            except ValueError:
+                text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
+                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                await ctx.send(embed=embed)
+                return
+            await ctx.channel.edit(slowmode_delay=seconds)
+            text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {seconds} seconds."
+            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            await ctx.send(embed=embed)
+            
+        elif _increment == 'm':
+            # implement slowmode in minutes
+            minutes = time[:-1]
+            try:
+                seconds = int(minutes) * 60
+            except ValueError:
+                text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
+                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                await ctx.send(embed=embed)
+                return
+            await ctx.channel.edit(slowmode_delay=seconds)
+            text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {minutes} minute(s)."
+            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            await ctx.send(embed=embed)
+
+        elif _increment == 'h':
+            # implement slowmode in hours
+            hours = time[:-1]
+            try:
+                seconds = int(hours) * 60 * 60
+            except ValueError:
+                text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
+                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                await ctx.send(embed=embed)
+                return
+            await ctx.channel.edit(slowmode_delay=seconds)
+            text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {hours} hour(s)."
+            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            await ctx.send(embed=embed)
+
+        else:
+            if time == "off":
+                await ctx.channel.edit(slowmode_delay=0)
+                text = f"{await self.emojis.success()} Removed slowmode delay from this channel."
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
-            case 'm':
-                minutes = time[:-1]
-                try:
-                    seconds = int(minutes) * 60
-                except ValueError:
-                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
-                    embed = discord.Embed(title=text, colour=MochjiColor.red())
-                    await ctx.send(embed=embed)
-                    return
-                await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {minutes} minute(s)."
-                embed = discord.Embed(title=text, colour=MochjiColor.green())
+            else:
+                text = f"{await self.emojis.success()} Unknown argument '{time}', see '!help slowmode'"
+                embed = discord.Embed(title=text, colour=MochjiColor.red())
                 await ctx.send(embed=embed)
-            case 'h':
-                hours = time[:-1]
-                try:
-                    seconds = int(hours) * 60 * 60
-                except ValueError:
-                    text = f"{await self.emojis.error()} Unknown argument: '{time}', see '!help slowmode'"
-                    embed = discord.Embed(title=text, colour=MochjiColor.red())
-                    await ctx.send(embed=embed)
-                    return
-                await ctx.channel.edit(slowmode_delay=seconds)
-                text = f"{await self.emojis.success()} Set the slowmode delay in this channel to {hours} hour(s)."
-                embed = discord.Embed(title=text, colour=MochjiColor.green())
-                await ctx.send(embed=embed)
-            case _:
-                if time == "off":
-                    await ctx.channel.edit(slowmode_delay=0)
-                    text = f"{await self.emojis.success()} Removed slowmode delay from this channel."
-                    embed = discord.Embed(title=text, colour=MochjiColor.green())
-                    await ctx.send(embed=embed)
-                else:
-                    text = f"{await self.emojis.success()} Unknown argument '{time}', see '!help slowmode'"
-                    embed = discord.Embed(title=text, colour=MochjiColor.red())
-                    await ctx.send(embed=embed)
 
     @commands.command(brief="Delete a given number of messages", help="Delete a given number of messages.", usage="[AMOUNT]")
     @commands.has_permissions(manage_messages=True)

@@ -3,6 +3,7 @@ import time
 import logging
 import discord
 from discord.ext import commands
+from typing import Union
 
 from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
@@ -53,7 +54,7 @@ def start_client():
     async def delete_dm_history(ctx):
         '''Delete all DMs from bot'''
         await ctx.author.create_dm() # attempt to open DMChannel with user
-        channel: discord.DMChannel | None = ctx.author.dm_channel
+        channel = ctx.author.dm_channel
         if channel: # if user is able to recieve DMs
             async for message in channel.history():
                 if message.author == bot.user:

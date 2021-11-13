@@ -1,4 +1,3 @@
-from operator import is_
 import string
 import discord
 from discord import embeds
