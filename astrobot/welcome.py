@@ -23,7 +23,7 @@ Finally, head on over to {self.channel_ids[2]} and join in the conversation!"
         await member.send(embed=embed)
     
     @commands.Cog.listener()
-    async def on_ready(self, ctx):
+    async def on_ready(self):
         self.channel_ids.append(await self.bot.fetch_guild(900194414868181035)) # mochji GUIDELINES
         self.channel_ids.append(await self.bot.fetch_guild(900218443129839637)) # mochji ROLES
         self.channel_ids.append(await self.bot.fetch_guild(900226421513945148)) # mochji GENERAL
