@@ -102,7 +102,7 @@ class Management(commands.Cog):
                 embed = discord.Embed(title=text, colour=MochjiColor.green())
                 await ctx.send(embed=embed)
             else:
-                text = f"{await self.emojis.success()} Unknown argument '{time}', see '!help slowmode'"
+                text = f"{await self.emojis.error()} Unknown argument '{time}', see '!help slowmode'"
                 embed = discord.Embed(title=text, colour=MochjiColor.red())
                 await ctx.send(embed=embed)
 
