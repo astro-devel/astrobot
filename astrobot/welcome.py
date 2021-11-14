@@ -6,7 +6,7 @@ class WelcomeWagon(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: commands.Bot = bot
         self.welcome_channel = 904815153177063514
-        self.channel_ids = [bot.fetch_guild(900194414868181035), bot.fetch_guild(900218443129839637), bot.fetch_guild(900226421513945148)] # GUIDELINES, ROLES, GENERAL
+        self.channel_ids = []
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -21,3 +21,9 @@ Finally, head on over to {self.channel_ids[2]} and join in the conversation!"
             color=MochjiColor.blue()
         )
         await member.send(embed=embed)
+    
+    @commands.Cog.listener()
+    async def on_ready(self, ctx):
+        self.channel_ids.append(await self.bot.fetch_guild(900194414868181035)) # mochji GUIDELINES
+        self.channel_ids.append(await self.bot.fetch_guild(900218443129839637)) # mochji ROLES
+        self.channel_ids.append(await self.bot.fetch_guild(900226421513945148)) # mochji GENERAL
