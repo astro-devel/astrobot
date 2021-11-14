@@ -6,7 +6,7 @@ class WelcomeWagon(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: commands.Bot = bot
         self.welcome_channel = 904815153177063514
-        self.channel_ids = [None, None, None] # GUIDELINES, ROLES, GENERAL
+        self.channel_ids = [bot.fetch_guild(900194414868181035), bot.fetch_guild(900218443129839637), bot.fetch_guild(900226421513945148)] # GUIDELINES, ROLES, GENERAL
     
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):

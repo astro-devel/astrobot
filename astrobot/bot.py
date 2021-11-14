@@ -9,6 +9,8 @@ from astrobot import __version__ as astrobot_v
 from astrobot.colors import MochjiColor
 from astrobot.init_cogs import init_cogs
 
+LOG_DIR = os.environ["LOG_DIR"]
+
 class MochjiActivity(discord.Activity):
     # init bot activity status (BROKEN)
     def __init__(self):
@@ -29,16 +31,13 @@ def start_client():
     # initialize all bot cogs
     init_cogs(bot)
 
-    # TODO: remember to uncomment logger block when begin self-hosting bot
-    '''
     # initalize pycord logger
     log_time = int(time.time())
     logger = logging.getLogger('discord')
     logger.setLevel(logging.DEBUG)
-    handler = logging.FileHandler(filename=f'logs/{log_time}.log', encoding='utf-8', mode='w')
+    handler = logging.FileHandler(filename=f'{LOG_DIR}/{log_time}.log', encoding='utf-8', mode='w')
     handler.setFormatter(logging.Formatter('[%(asctime)s][ %(levelname)s ] %(name)s: %(message)s'))
     logger.addHandler(handler)
-    '''
 
     @bot.command(brief="Return bot version", help="Return bot version.")
     async def version(ctx):
@@ -77,6 +76,17 @@ def start_client():
     async def on_ready():
         print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
 
-    bot.run(os.environ["BOT_TOKEN"])
+    import signal
+    import asyncio
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
+    loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
+    try:
+        loop.run_until_complete(bot.start(os.environ["BOT_TOKEN"]))
+    except KeyboardInterrupt:
+        loop.run_until_complete(bot.close())
+    finally:
+        loop.close()
+    #bot.run(os.environ["BOT_TOKEN"])
 
 
