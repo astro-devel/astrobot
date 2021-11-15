@@ -103,6 +103,7 @@ class Moderation(commands.Cog):
             async for _member in ctx.guild.fetch_members():
                 if _member.name == _member_name:
                     _member_obj = _member
+                    break
             if not _member_obj:
                 await ctx.send(embed=discord.Embed(title=f"**Unable to find user {member}**"))
                 return
