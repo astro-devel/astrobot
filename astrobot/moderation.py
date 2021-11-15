@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
             await member.send(embed=embed)
         except discord.errors.Forbidden: # if user only accepts DMs from friends, warn them in server channel
             embed = discord.Embed(
-                title=f"{await self.emojis.warning()} Warning! {self.emojis.warning()}",
+                title=f"{await self.emojis.warning()} Warning! {await self.emojis.warning()}",
                 description=f"Warned by: {invoker}\nReason: {reason}",
                 colour=MochjiColor.orange()
             )
@@ -213,7 +213,7 @@ class Moderation(commands.Cog):
                     word = word.replace(char, "")
             if word in self.blocked_words:
                 await message.delete()
-                await self.warn(ctx, message.author, reason=f"{self.emojis.warning()} `{word}` is a forbidden word. Watch your language!", bot_invoked=True)
+                await self.warn(ctx, message.author, reason=f"`{word}` is a forbidden word. Watch your language!", bot_invoked=True)
     
     @commands.Cog.listener()
     async def on_ready(self):
