@@ -22,7 +22,7 @@ class Moderation(commands.Cog):
             user_id = member.id,
             warn_count = 0,
             ban_count = 0,
-            warn_count = 0,
+            kick_count = 0,
             mute_count = 0
         )
         for item in _query:
