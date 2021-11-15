@@ -98,7 +98,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members=True, ban_members=True)
     async def get_mod_info(self, ctx, member):
         if isinstance(member, str):
-            _member_name, _member_discriminator = member.split("#")
+            _member_name = member.split("#")[0]
             _member_obj = None
             async for _member in ctx.guild.fetch_members():
                 if _member.name == _member_name:
