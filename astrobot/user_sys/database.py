@@ -4,7 +4,7 @@ from discord.ext import commands
 from astrobot.colors import MochjiColor
 
 import sqlalchemy
-from sqlalchemy import Table, Column, String, MetaData, Integer
+from sqlalchemy import Table, Column, String, MetaData, Integer, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 
 db = sqlalchemy.create_engine(os.environ["DATABASE_URL"], future=True)
@@ -13,7 +13,7 @@ _base = declarative_base()
 class UserMod__Obj(_base):
     __tablename__ = 'user_moderation'
 
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(BigInteger, primary_key=True)
     ban_count = Column(Integer)
     kick_count = Column(Integer)
     warn_count = Column(Integer)
