@@ -18,7 +18,13 @@ class Moderation(commands.Cog):
 
     def increment_db_count(self, member, _type=None):
         _query = db_session.query(_DB_UserMod__Obj)
-        _user = None
+        _user = _DB_UserMod__Obj(
+            user_id = member.id,
+            warn_count = 0,
+            ban_count = 0,
+            warn_count = 0,
+            mute_count = 0
+        )
         for item in _query:
             if item.user_id == member:
                 _user = item
