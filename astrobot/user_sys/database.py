@@ -13,7 +13,7 @@ _base = declarative_base()
 class UserMod__Obj(_base):
     __tablename__ = 'user_moderation'
 
-    user_id = Column(BigInteger, primary_key=True)
+    user_id = Column(String, primary_key=True)
     ban_count = Column(Integer)
     kick_count = Column(Integer)
     warn_count = Column(Integer)

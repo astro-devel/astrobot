@@ -19,14 +19,14 @@ class Moderation(commands.Cog):
     def increment_db_count(self, member, _type=None):
         _query = db_session.query(_DB_UserMod__Obj)
         _user = _DB_UserMod__Obj(
-            user_id = member.id,
+            user_id = str(member.id),
             warn_count = 0,
             ban_count = 0,
             kick_count = 0,
             mute_count = 0
         )
         for item in _query:
-            if item.user_id == member:
+            if str(item.user_id) == str(member.id):
                 _user = item
                 db_session.delete(item)
 
