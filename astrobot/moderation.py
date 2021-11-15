@@ -96,7 +96,18 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True, ban_members=True)
-    async def get_mod_info(self, ctx, member : discord.Member):
+    async def get_mod_info(self, ctx, member):
+        if isinstance(member, str):
+            _member_name, _member_discriminator = member.split("#")
+            _member_obj = None
+            async for _member in ctx.guild.fetch_members():
+                if _member.name == _member_name:
+                    _member_obj = _member
+            if not _member_obj:
+                await ctx.send(embed=discord.Embed(title=f"**Unable to find user {member}**"))
+                return
+            member = _member
+
         embed = discord.Embed(
             title=f"Moderation info for {member}"
         )
