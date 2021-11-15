@@ -16,7 +16,8 @@ def init_cogs(bot: Bot) -> None:
         bot.add_cog(TestCommands(bot))
     else:
         # cog(s) that should NOT be enabled during devel
-        bot.add_cog(WelcomeWagon(bot))
+        #bot.add_cog(WelcomeWagon(bot))
+        pass
 
     bot.add_cog(UserInfo(bot))
     bot.add_cog(MochjiMojis(bot))

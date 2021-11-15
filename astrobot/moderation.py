@@ -5,6 +5,8 @@ from discord import colour
 from discord import message
 from discord.ext import commands
 from astrobot.colors import MochjiColor
+from astrobot.user_sys.database import session as db_session
+from astrobot.user_sys.database import UserMod__Obj as _DB_UserMod__Obj
 
 class Moderation(commands.Cog):
     def __init__(self, bot) -> None:
@@ -13,6 +15,22 @@ class Moderation(commands.Cog):
         self.blocked_words = [
             "cummies"
         ]
+
+    def increment_db_count(self, member, _type=None):
+        _query = db_session.query(_DB_UserMod__Obj)
+        _user = None
+        for item in _query:
+            if item.user_id == member:
+                _user = item
+                db_session.delete(item)
+
+        if _type == 'warn': _user.warn_count += 1
+        elif _type == 'ban': _user.ban_count += 1
+        elif _type == 'kick': _user.kick_count += 1
+        elif _type == 'mute': _user.mute_count += 1
+
+        db_session.add(_user)
+        db_session.commit()
 
     @commands.command(brief="Warn a user", help="Warn a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
@@ -40,6 +58,10 @@ class Moderation(commands.Cog):
             )
             await ctx.send(member.mention, embed=embed, delete_after=5)
             return
+
+        # increment count in database
+        if not bot_invoked: # bot warns don't count towards total count
+            self.increment_db_count(member=member, _type='warn')
 
         # send success message in channel
         embed = discord.Embed(
@@ -78,6 +100,8 @@ class Moderation(commands.Cog):
             await member.send(embed=embed)
         except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
+        
+        self.increment_db_count(member=member, type='ban')
 
         await ctx.guild.ban(user= member, reason= reason)
         text = f"{await self.emojis.success()} Successfully banned user {member.name}#{member.discriminator}"
@@ -97,6 +121,8 @@ class Moderation(commands.Cog):
         except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
         
+        self.increment_db_count(member=member, type='kick')
+
         await ctx.guild.kick(user= member, reason= reason)
         text = f"{await self.emojis.success()} Successfully kicked user {member.name}#{member.discriminator}"
         embed = discord.Embed(description=text, colour=MochjiColor.green())
