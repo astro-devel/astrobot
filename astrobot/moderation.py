@@ -101,7 +101,7 @@ class Moderation(commands.Cog):
             _member_name, _member_discriminator = member.split("#")
             _member_obj = None
             async for _member in ctx.guild.fetch_members():
-                if _member.name == _member_name:
+                if _member.name == _member_name and _member.discriminator == _member_discriminator:
                     _member_obj = _member
                     break
             if not _member_obj:
