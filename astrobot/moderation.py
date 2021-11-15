@@ -29,6 +29,7 @@ class Moderation(commands.Cog):
             if str(item.user_id) == str(member.id):
                 _user = item
                 db_session.delete(item)
+                break
 
         if _type == 'warn': _user.warn_count += 1
         elif _type == 'ban': _user.ban_count += 1
@@ -93,6 +94,42 @@ class Moderation(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command()
+    @commands.has_permissions(kick_members=True, ban_members=True)
+    async def get_mod_info(self, ctx, member : discord.Member):
+        embed = discord.Embed(
+            title=f"Moderation info for {member}"
+        )
+        _query = db_session.query(_DB_UserMod__Obj)
+        _user = _DB_UserMod__Obj(
+            user_id = str(member.id),
+            warn_count = 0,
+            ban_count = 0,
+            kick_count = 0,
+            mute_count = 0
+        )
+        for item in _query:
+            if str(item.user_id) == str(member.id):
+                _user = item
+                break
+
+        embed.add_field(
+            name="**Warns**",
+            value=_user.warn_count
+        ).add_field(
+            name="**Bans**",
+            value=_user.ban_count
+        ).add_field(
+            name="**Kicks**",
+            value=_user.kick_count
+        ).add_field(
+            name="**Mutes**",
+            value=_user.mute_count
+        ).set_thumbnail(
+            url=f"https://cdn.discordapp.com/avatars/{member.id}/{member.avatar}" if member.avatar else None
+        )
+
+        await ctx.send(embed=embed)
 
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
