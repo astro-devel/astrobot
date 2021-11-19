@@ -75,7 +75,15 @@ def start_client():
     @bot.event
     async def on_ready():
         print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
-
+    
+    @bot.event
+    async def on_command(ctx: commands.context.Context):
+        # TODO: integrate into database instead of single logfile
+        _t = time.localtime()
+        with open(f"{LOG_DIR}/invokes.log", 'a') as _log:
+            print(f"[ {str(_t.tm_year)[2:]}.{_t.tm_mday}.{_t.tm_mon} - {_t.tm_hour}:{_t.tm_min}:{_t.tm_sec} ] {ctx.author} {'attempted to invoke' if ctx.command_failed else 'invoked'} command '{ctx.command}' in {ctx.guild}", file=_log)
+    
+    '''
     import signal
     import asyncio
     loop = asyncio.get_event_loop()
@@ -87,6 +95,7 @@ def start_client():
         loop.run_until_complete(bot.close())
     finally:
         loop.close()
-    #bot.run(os.environ["BOT_TOKEN"])
+    '''
+    bot.run(os.environ["BOT_TOKEN"])
 
 

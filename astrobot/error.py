@@ -11,6 +11,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        # TODO: evaluate whether or not to switch this listener to on_error()
         has_self_handler = []
         if ctx.invoked_with in has_self_handler:
             return # if the command has its own handler, no need to run it through the global one
