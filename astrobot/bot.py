@@ -78,9 +78,11 @@ def start_client():
     
     @bot.event
     async def on_command(ctx: commands.context.Context):
-        # TODO: integrate into database instead of single logfile
+        # TODO: consider integrating into database instead of logfile
         _t = time.localtime()
-        with open(f"{LOG_DIR}/invokes.log", 'a') as _log:
+        if not os.path.isdir(f"{LOG_DIR}/{ctx.author.name}"): os.mkdir(f"{LOG_DIR}/{ctx.author.name}") # create user log directory if does not exist
+        with open(f"{LOG_DIR}/{ctx.author.name}/invokes.log", 'a') as _log:
+            # log invoked command with timestamp and invoke server
             print(f"[ {str(_t.tm_year)[2:]}.{_t.tm_mday}.{_t.tm_mon} - {_t.tm_hour}:{_t.tm_min}:{_t.tm_sec} ] {ctx.author} {'attempted to invoke' if ctx.command_failed else 'invoked'} command '{ctx.command}' in {ctx.guild}", file=_log)
     
     '''
