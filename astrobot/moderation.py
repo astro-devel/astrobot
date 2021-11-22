@@ -16,7 +16,7 @@ class Moderation(commands.Cog):
             "cummies"
         ]
 
-    def increment_db_count(self, member, _type=None):
+    def increment_db_count(self, member, mod_type=None):
         _query = db_session.query(_DB_UserMod__Obj)
         _user = _DB_UserMod__Obj(
             user_id = str(member.id),
@@ -31,10 +31,10 @@ class Moderation(commands.Cog):
                 db_session.delete(item)
                 break
 
-        if _type == 'warn': _user.warn_count += 1
-        elif _type == 'ban': _user.ban_count += 1
-        elif _type == 'kick': _user.kick_count += 1
-        elif _type == 'mute': _user.mute_count += 1
+        if mod_type == 'warn': _user.warn_count += 1
+        elif mod_type == 'ban': _user.ban_count += 1
+        elif mod_type == 'kick': _user.kick_count += 1
+        elif mod_type == 'mute': _user.mute_count += 1
 
         db_session.add(_user)
         db_session.commit()
@@ -68,7 +68,7 @@ class Moderation(commands.Cog):
 
         # increment count in database
         if not bot_invoked: # bot warns don't count towards total count
-            self.increment_db_count(member=member, _type='warn')
+            self.increment_db_count(member=member, mod_type='warn')
 
         # send success message in channel
         embed = discord.Embed(
@@ -96,18 +96,22 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True, ban_members=True)
-    async def get_mod_info(self, ctx, *, member):
-        if isinstance(member, str):
-            _member_name, _member_discriminator = member.split("#")
-            _member_obj = None
-            async for _member in ctx.guild.fetch_members():
-                if _member.name == _member_name and _member.discriminator == _member_discriminator:
-                    _member_obj = _member
-                    break
-            if not _member_obj:
-                await ctx.send(embed=discord.Embed(title=f"**Unable to find user {member}**"))
-                return
-            member = _member
+    async def get_mod_info(self, ctx, *, member: str):
+        # TODO: implement just name search and if multiple, show list of options (with nick if applicable)
+        if member[0:3] == "<@!":
+            await ctx.send(embed=discord.Embed(title=f"{await self.emojis.error()} **Please use User#Discriminator format instead of mention. i.e. '!get_mod_info DiscordUser#1234'**", colour=MochjiColor.red()), delete_after=10)
+            return
+
+        _member_name, _member_discriminator = member.split("#")
+        _member_obj = None
+        async for _member in ctx.guild.fetch_members():
+            if _member.name == _member_name and _member.discriminator == _member_discriminator:
+                _member_obj = _member
+                break
+        if not _member_obj:
+            await ctx.send(embed=discord.Embed(title=f"{await self.emojis.error()} **Unable to find user {member}**", colour=MochjiColor.red()), delete_after=10)
+            return
+        member = _member
 
         embed = discord.Embed(
             title=f"Moderation info for {member}"
@@ -156,7 +160,7 @@ class Moderation(commands.Cog):
         except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
         
-        self.increment_db_count(member=member, type='ban')
+        self.increment_db_count(member=member, mod_type='ban')
 
         await ctx.guild.ban(user= member, reason= reason)
         text = f"{await self.emojis.success()} Successfully banned user {member.name}#{member.discriminator}"
@@ -176,7 +180,7 @@ class Moderation(commands.Cog):
         except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
         
-        self.increment_db_count(member=member, type='kick')
+        self.increment_db_count(member=member, mod_type='kick')
 
         await ctx.guild.kick(user= member, reason= reason)
         text = f"{await self.emojis.success()} Successfully kicked user {member.name}#{member.discriminator}"
