@@ -19,12 +19,6 @@ class UserMod__Obj(_base):
     warn_count = Column(Integer)
     mute_count = Column(Integer)
 
-class FMUser__Obj(_base):
-    __tablename__ = 'lastfm'
-
-    user_id = Column(String, primary_key=True)
-    lastfm_user = Column(String)
-
 Session = sqlalchemy.orm.sessionmaker(db, future=True)  
 session: sqlalchemy.orm.Session = Session()
 

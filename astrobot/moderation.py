@@ -46,6 +46,7 @@ class Moderation(commands.Cog):
             invoker = self.bot.user
         else:
             invoker = ctx.author
+            self.increment_db_count(member=member, mod_type='warn') # increment count in database if not bot invoked
 
         # send warn Message to user
         embed = discord.Embed(
@@ -65,10 +66,6 @@ class Moderation(commands.Cog):
             )
             await ctx.send(member.mention, embed=embed, delete_after=5)
             return
-
-        # increment count in database
-        if not bot_invoked: # bot warns don't count towards total count
-            self.increment_db_count(member=member, mod_type='warn')
 
         # send success message in channel
         embed = discord.Embed(
@@ -155,15 +152,16 @@ class Moderation(commands.Cog):
             description=f"Banned by: {ctx.author}\nBan Reason: {reason}",
             colour=MochjiColor.red()
         )
-        try:
-            await member.send(embed=embed)
-        except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
-            pass
+        if not member.bot:
+            try:
+                await member.send(embed=embed)
+            except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+                pass
         
         self.increment_db_count(member=member, mod_type='ban')
 
         await ctx.guild.ban(user= member, reason= reason)
-        text = f"{await self.emojis.success()} Successfully banned user {member.name}#{member.discriminator}"
+        text = f"{await self.emojis.success()} **Successfully banned user {member.name}#{member.discriminator}**"
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
@@ -175,15 +173,16 @@ class Moderation(commands.Cog):
             description=f"Kicked by: {ctx.author}\nKick Reason: {reason}",
             colour=MochjiColor.red()
         )
-        try:
-            await member.send(embed=embed)
-        except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
-            pass
+        if not member.bot:
+            try:
+                await member.send(embed=embed)
+            except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+                pass
         
         self.increment_db_count(member=member, mod_type='kick')
 
         await ctx.guild.kick(user= member, reason= reason)
-        text = f"{await self.emojis.success()} Successfully kicked user {member.name}#{member.discriminator}"
+        text = f"{await self.emojis.success()} **Successfully kicked user {member.name}#{member.discriminator}**"
         embed = discord.Embed(description=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
 
@@ -202,7 +201,7 @@ class Moderation(commands.Cog):
             bans = await ctx.guild.bans()
             _unban = bans[member-1].user
             await ctx.guild.unban(_unban)
-            text = f"{await self.emojis.success()} Successfully unbanned user {_unban}"
+            text = f"{await self.emojis.success()} **Successfully unbanned user {_unban}**"
             embed = discord.Embed(title=text, colour=MochjiColor.green())
             await ctx.send(embed=embed)
         else:
@@ -212,7 +211,7 @@ class Moderation(commands.Cog):
                 user = ban_entry.user
                 if (user.name, user.discriminator) == (member_name, member_discriminator):
                     await ctx.guild.unban(user)
-                    text = f"{await self.emojis.success()} Successfully unbanned user {user}"
+                    text = f"{await self.emojis.success()} **Successfully unbanned user {user}**"
                     embed = discord.Embed(title=text, colour=MochjiColor.green())
                     await ctx.send(embed=embed)
         

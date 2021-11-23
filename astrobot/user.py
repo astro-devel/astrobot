@@ -6,18 +6,15 @@ from astrobot.colors import MochjiColor
 class UserInfo(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
-    
-    #@commands.command()
-    async def whois(self, ctx, member: discord.Member):
-        return
 
     @commands.command()
-    async def whoami(self, ctx):
-        member = ctx.author
+    async def whois(self, ctx, member: discord.Member):
+        #member = ctx.author
         name = f"{member.name}#{member.discriminator}"
         joined_guild_at = member.joined_at.date()
         joined_discord_at = member.created_at.date()
         nickname = member.nick
+        mention = member.mention
         current_status = member.raw_status
         avatar = member.avatar
         user_id = member.id
@@ -34,8 +31,6 @@ class UserInfo(commands.Cog):
                 continue
             roles += f"{role}\n"
             counter += 1
-
-        mention = member.mention
 
         embed = discord.Embed(
             title = f"User Info"
@@ -56,10 +51,14 @@ class UserInfo(commands.Cog):
             value=user_id
         ).add_field(
             name="Roles:",
-            value=roles
+            value=roles if roles else "None"
         )
 
         if avatar:
             embed.set_thumbnail(url=avatar_url)
 
         await ctx.send(embed=embed)
+    
+    @commands.command()
+    async def whoami(self, ctx):
+        await self.whois(ctx, ctx.author)

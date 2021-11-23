@@ -3,19 +3,22 @@ import time
 import logging
 import discord
 from discord.ext import commands
-from typing import Union
 
 from astrobot import __version__ as astrobot_v
+from astrobot import __changelog__
 from astrobot.colors import MochjiColor
 from astrobot.init_cogs import init_cogs
 
 LOG_DIR = os.environ["LOG_DIR"]
 
 class MochjiActivity(discord.Activity):
-    # init bot activity status (BROKEN)
     def __init__(self):
         super().__init__()
-        self.name = "with your mom"
+        self.name = "Mr. Robot"
+        self.type = discord.ActivityType.watching
+        self.timestamps = {
+            "start": 1635626843000
+        }
 
 def start_client():
     if not os.environ.get("DEVEL"):
@@ -41,17 +44,27 @@ def start_client():
 
     @bot.command(brief="Return bot version", help="Return bot version.")
     async def version(ctx):
-        '''Return current version bot is running'''
+        """Return current version bot is running"""
         text = f"Current astrobot version is '{astrobot_v}'"
         embed = discord.Embed(
             title=text,
+            description="**You can view this version's changes with the '!changelog' command**",
             color=MochjiColor.white()
         )
         await ctx.send(embed=embed)
     
+    @bot.command(brief="Return changelog for current bot version", help="Return changelog for current bot version.")
+    async def changelog(ctx):
+        """Return changelog for current bot version"""
+        embed = discord.Embed(
+            title=f"**astrobot v{astrobot_v} CHANGELOG**",
+            description=__changelog__,
+            color=MochjiColor.white()
+        )
+        await ctx.send(embed=embed)
     @bot.command(brief="Delete all DMs from bot", help="Delete all DMs recieved from bot.")
     async def delete_dm_history(ctx):
-        '''Delete all DMs from bot'''
+        """Delete all DMs from bot"""
         await ctx.author.create_dm() # attempt to open DMChannel with user
         channel = ctx.author.dm_channel
         if channel: # if user is able to recieve DMs
@@ -85,19 +98,6 @@ def start_client():
             # log invoked command with timestamp and invoke server
             print(f"[ {str(_t.tm_year)[2:]}.{_t.tm_mday}.{_t.tm_mon} - {_t.tm_hour}:{_t.tm_min}:{_t.tm_sec} ] {ctx.author} {'attempted to invoke' if ctx.command_failed else 'invoked'} command '{ctx.command}' in {ctx.guild}", file=_log)
     
-    '''
-    import signal
-    import asyncio
-    loop = asyncio.get_event_loop()
-    loop.add_signal_handler(signal.SIGINT, lambda: loop.stop())
-    loop.add_signal_handler(signal.SIGTERM, lambda: loop.stop())
-    try:
-        loop.run_until_complete(bot.start(os.environ["BOT_TOKEN"]))
-    except KeyboardInterrupt:
-        loop.run_until_complete(bot.close())
-    finally:
-        loop.close()
-    '''
     bot.run(os.environ["BOT_TOKEN"])
 
 

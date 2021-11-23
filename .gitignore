@@ -2,7 +2,6 @@
 __pycache__
 mochji.env
 .venv
-logs
+/logs
 /dist
-/rgon
-/halys
+/astrobot/fm
