@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "astrobot"
-version = "21.11.1"
+version = "21.11.1.post1"
 description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 

@@ -21,10 +21,14 @@ class FMCommands(commands.Cog):
     async def fm(self, ctx):
 
         _db_query = db_session.query(_DB_FMUser__Obj)
+        user = None
         for item in _db_query:
             if str(item.user_id) == str(ctx.author.id):
                 user = item.lastfm_user
                 break
+        if not user:
+            await ctx.send(f"Seems like you're not registered with me... Make sure to attach your last.fm username with the command '!fmsetuser [USERNAME]'!")
+            return
 
         _last_track = requests.get(self.make_request_url("user.getrecenttracks", user)).json()['recenttracks']['track'][0]
         _last_track_artist = _last_track['artist']['#text']
