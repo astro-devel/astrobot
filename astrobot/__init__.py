@@ -1,9 +1,9 @@
-__version__ = '21.11.2'
+__version__ = '21.11.3'
 __changelog__ = f"""**CHANGELOG**\n
-- Implement in-bot changelog
-- Remove !fm command
-- Fixed bot activity display
-- Added !whois command
-- [BUGFIX] !kick not working on bots (b17a0195)
-- [BUGFIX] !warn not incrementing count in database
-- [BUGFIX] !whoami/!whois returns HTTPException if user has no roles"""
+- Implemented !mute, !unmute, and !get_mute commands
+- Changed !get_mod_info command to !modinfo
+- Changed error messages to delete after 10s instead of 5s
+- Added ability to combine multipliers on !slowmode command (i.e. !slowmode 5h25m)"""
+
+# globs
+mute_timers = {}

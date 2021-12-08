@@ -5,3 +5,4 @@ mochji.env
 /logs
 /dist
 /astrobot/fm
+*local

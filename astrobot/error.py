@@ -3,15 +3,13 @@ import discord
 from discord.ext import commands
 from astrobot.colors import MochjiColor
 
-
 class ErrorHandler(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
         self.emojis = None
-
+    
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        # TODO: evaluate whether or not to switch this listener to on_error()
         has_self_handler = []
         if ctx.invoked_with in has_self_handler:
             return # if the command has its own handler, no need to run it through the global one
@@ -21,12 +19,12 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.CheckFailure):
             text = f"{await self.emojis.error()} You are not authorized to use this command!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
-            await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
+            await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
         elif isinstance(error, commands.BotMissingPermissions):
             text = f"{await self.emojis.error()} Sorry, I'm not allowed to do that here. :("
             embed = discord.Embed(title=text, colour=MochjiColor.red())
-            await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
+            await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
         text = f"{await self.emojis.error()} Uncaught error occured. Hopefully this will help:"
         err_type = str(type(error)).split('.')[-1].replace("'", "")
@@ -39,7 +37,7 @@ class ErrorHandler(commands.Cog):
         if os.environ.get("DEVEL"):
             await ctx.send(ctx.author.mention, embed=embed)
         else:
-            await ctx.send(ctx.author.mention, embed=embed, delete_after=5)
+            await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
 
     @commands.Cog.listener()
     async def on_ready(self):

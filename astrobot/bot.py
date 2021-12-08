@@ -5,9 +5,19 @@ import discord
 from discord.ext import commands
 
 from astrobot import __version__ as astrobot_v
-from astrobot import __changelog__
+from astrobot import (
+    __changelog__,
+    mute_timers,
+    util,
+    moderation
+)
 from astrobot.colors import MochjiColor
 from astrobot.init_cogs import init_cogs
+from astrobot.user_sys.database import (
+    CommandLog__Obj as DB_CommandLog__Obj,
+    MutedUsers__Obj as DB_MutedUsers__Obj,
+    session as db_session
+)   
 
 LOG_DIR = os.environ["LOG_DIR"]
 
@@ -87,17 +97,47 @@ def start_client():
 
     @bot.event
     async def on_ready():
+        # re-initialize mute timers, and if any mutes are expired, go ahead and unmute members
+        for item in db_session.query(DB_MutedUsers__Obj):
+            _guild = await bot.fetch_guild(item.guild_id)
+            _user = await _guild.fetch_member(item.user_id)
+            if int(item.unmute_at) - int(time.time()) < 0:
+                successful, err = await moderation.unmute(_user, _guild, "Time has been served.")
+                if not successful:
+                    print(err)
+            else:
+                timer = util.Timer(int(item.unmute_at) - int(time.time()), moderation.unmute, _user, await bot.fetch_guild(item.guild_id), "Time has been served.")
+                mute_timers[f"{_user}"] = timer
+
         print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
     
     @bot.event
     async def on_command(ctx: commands.context.Context):
-        # TODO: consider integrating into database instead of logfile
+        '''
+        _time = int(time.time()).__str__()
+        _cmd_obj = {
+            'command': ctx.command.__str__(),
+            'successful': ctx.command_failed,
+            'args':{
+                'args': [x.__str__() for x in ctx.args],
+                'kwargs': ctx.kwargs
+            }
+        }
+        _obj = DB_CommandLog__Obj(
+            user_id = ctx.author.id,
+            timestamp = _time,
+            command = _cmd_obj
+        )
+        db_session.add(_obj)
+        db_session.commit()
+        '''
         _t = time.localtime()
         if not os.path.isdir(f"{LOG_DIR}/{ctx.author.name}"): os.mkdir(f"{LOG_DIR}/{ctx.author.name}") # create user log directory if does not exist
         with open(f"{LOG_DIR}/{ctx.author.name}/invokes.log", 'a') as _log:
             # log invoked command with timestamp and invoke server
             print(f"[ {str(_t.tm_year)[2:]}.{_t.tm_mday}.{_t.tm_mon} - {_t.tm_hour}:{_t.tm_min}:{_t.tm_sec} ] {ctx.author} {'attempted to invoke' if ctx.command_failed else 'invoked'} command '{ctx.command}' in {ctx.guild}", file=_log)
-    
+
+
     bot.run(os.environ["BOT_TOKEN"])
 
 
