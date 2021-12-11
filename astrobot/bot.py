@@ -141,3 +141,5 @@ def start_client():
     bot.run(os.environ["BOT_TOKEN"])
 
 
+if __name__ == "__main__":
+    start_client()

@@ -6,3 +6,4 @@ mochji.env
 /dist
 /astrobot/fm
 *local
+/docker-compose.yml

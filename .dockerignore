@@ -1,0 +1,12 @@
+*__pycache__
+dist
+local
+logs
+*.env
+README
+*.lock
+.venv
+.gitignore
+/astrobot/fm
+/Dockerfile
+/docker-compose.yml
