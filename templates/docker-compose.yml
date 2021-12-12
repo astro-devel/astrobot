@@ -11,7 +11,7 @@ services:
       - ./postgres_data:/var/lib/postgresql:rw
     environment:
       POSTGRES_DB:
-      POSTGRES_USER: 
+      POSTGRES_USER:
       POSTGRES_PASSWORD:
     ports:
       - 5432:5432
@@ -19,7 +19,15 @@ services:
     image: astrobot
     command: ["./wait-for-it.sh", "postgres:5432", "--", "python3", "-m", "astrobot.bot"]
     environment:
-      DATABASE_URL: postgresql://[ ASTRO_USER_NAME ]:[ ASTRO_USER_PASSWORD ]@postgres
+      DATABASE_URL: postgresql://[ DB_USER_NAME ]:[ DB_USER_PASSWORD ]@postgres
+      BOT_TOKEN:
+    depends_on:
+      - postgres
+  halys:
+    image: halys
+    command: ["./wait-for-it.sh", "postgres:5432", "--", "python3", "-m", "halys.bot"]
+    environment:
+      DATABASE_URL: postgresql://[ DB_USER_NAME ]:[ DB_USER_PASSWORD ]@postgres
       BOT_TOKEN:
     depends_on:
       - postgres
