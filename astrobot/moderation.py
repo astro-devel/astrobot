@@ -46,10 +46,11 @@ class Moderation(commands.Cog):
             "cummies"
         ]
 
-    def increment_db_count(self, member, mod_type=None):
+    def increment_db_count(self, member, guild_id, mod_type=None):
         _query = db_session.query(_DB_UserMod__Obj)
         _user = _DB_UserMod__Obj(
             user_id = str(member.id),
+            guild_id = str(guild_id),
             warn_count = 0,
             ban_count = 0,
             kick_count = 0,
@@ -76,7 +77,7 @@ class Moderation(commands.Cog):
             invoker = self.bot.user
         else:
             invoker = ctx.author
-            self.increment_db_count(member=member, mod_type='warn') # increment count in database if not bot invoked
+            self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='warn') # increment count in database if not bot invoked
 
         # send warn Message to user
         embed = discord.Embed(
@@ -136,7 +137,7 @@ class Moderation(commands.Cog):
                 _member_obj = _member
                 break
         if not _member_obj:
-            await ctx.send(embed=discord.Embed(title=f"{await self.emojis.error()} **Unable to find user {member}**", colour=MochjiColor.red()), delete_after=10)
+            await ctx.send(embed=discord.Embed(title=f"{await self.emojis.error()} **Unable to find user {member}, are they in the server?**", colour=MochjiColor.red()), delete_after=10)
             return
         member = _member
 
@@ -146,13 +147,14 @@ class Moderation(commands.Cog):
         _query = db_session.query(_DB_UserMod__Obj)
         _user = _DB_UserMod__Obj(
             user_id = str(member.id),
+            guild_id = str(ctx.guild.id),
             warn_count = 0,
             ban_count = 0,
             kick_count = 0,
             mute_count = 0
         )
         for item in _query:
-            if str(item.user_id) == str(member.id):
+            if str(item.user_id) == str(member.id) and str(item.guild_id) == str(ctx.guild.id):
                 _user = item
                 break
 
@@ -177,6 +179,15 @@ class Moderation(commands.Cog):
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member : discord.Member, *, reason = None):
+
+        try:
+            await ctx.guild.ban(user= member, reason= reason)
+        except discord.Forbidden:
+            await ctx.send(embed=discord.Embed(
+                title = f"{await self.emojis.error()} **Unable to ban {member.name}#{member.discriminator}, try manually.**"
+            ))
+            return
+
         embed = discord.Embed(
             title=f"You have been banned from {ctx.guild.name}",
             description=f"Banned by: {ctx.author}\nBan Reason: {reason}",
@@ -188,9 +199,8 @@ class Moderation(commands.Cog):
             except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
                 pass
         
-        self.increment_db_count(member=member, mod_type='ban')
+        self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='ban')
 
-        await ctx.guild.ban(user= member, reason= reason)
         text = f"{await self.emojis.success()} **Successfully banned user {member.name}#{member.discriminator}**"
         embed = discord.Embed(title=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
@@ -198,6 +208,15 @@ class Moderation(commands.Cog):
     @commands.command(brief="Kick a user", help="Kick a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member : discord.Member, *, reason = None):
+
+        try:
+            await ctx.guild.kick(user= member, reason= reason)
+        except discord.Forbidden:
+            await ctx.send(embed=discord.Embed(
+                title = f"{await self.emojis.error()} **Unable to kick {member.name}#{member.discriminator}, try manually.**"
+            ))
+            return
+
         embed = discord.Embed(
             title=f"You have been kicked from {ctx.guild.name}",
             description=f"Kicked by: {ctx.author}\nKick Reason: {reason}",
@@ -209,9 +228,8 @@ class Moderation(commands.Cog):
             except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
                 pass
         
-        self.increment_db_count(member=member, mod_type='kick')
+        self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='kick')
 
-        await ctx.guild.kick(user= member, reason= reason)
         text = f"{await self.emojis.success()} **Successfully kicked user {member.name}#{member.discriminator}**"
         embed = discord.Embed(description=text, colour=MochjiColor.green())
         await ctx.send(embed=embed)
@@ -257,7 +275,7 @@ class Moderation(commands.Cog):
         _unmute_time = _mute_length + _timestamp
         _roles = [role.id for role in member.roles] # collect all user roles into variable for db storage
         await member.edit(roles=[ctx.guild.get_role(915841202803326976)]) # reset user roles to just muted role
-        self.increment_db_count(member, mod_type="mute")
+        self.increment_db_count(member, guild_id=ctx.guild.id, mod_type="mute")
 
         # add user id and user roles to db to recover after mute expires
         _db_obj = _DB_MutedUsers__Obj(
@@ -311,9 +329,10 @@ class Moderation(commands.Cog):
             title=f"**Active Mutes for {ctx.guild}**"
         )
         for name, time in mute_timers.items():
+            # TODO: convert to database pull (add timer info to database obj, mute() will need edit prob), need method of determining *time_left* AND *mute_length*, also need database pull to make command guild-specific
             embed.add_field(
                 name=f"**{name}**",
-                value=f"{time._timeout}s", # TODO: convert to database pull OR add timestamps to mute_timers obj, need method of determining *time_left* AND *mute_length*
+                value=f"{time._timeout}s", 
                 inline=True
             )
         await ctx.send(embed=embed)

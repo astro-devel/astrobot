@@ -14,6 +14,7 @@ class UserMod__Obj(_base):
     __tablename__ = 'user_moderation'
 
     user_id = Column(String, primary_key=True)
+    guild_id = Column(String)
     ban_count = Column(Integer)
     kick_count = Column(Integer)
     warn_count = Column(Integer)
