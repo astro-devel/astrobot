@@ -1,4 +1,5 @@
 import discord
+from discord import colour
 from discord.enums import Status
 from discord.ext import commands
 from astrobot.colors import MochjiColor
@@ -9,7 +10,6 @@ class UserInfo(commands.Cog):
 
     @commands.command()
     async def whois(self, ctx, member: discord.Member):
-        #member = ctx.author
         name = f"{member.name}#{member.discriminator}"
         joined_guild_at = member.joined_at.date()
         joined_discord_at = member.created_at.date()
@@ -29,11 +29,11 @@ class UserInfo(commands.Cog):
             if counter == 0:
                 counter += 1
                 continue
-            roles += f"{role}\n"
+            roles += f"{role.mention}\n"
             counter += 1
 
         embed = discord.Embed(
-            title = f"User Info"
+            colour = member.top_role.color
         ).add_field(
             name="Name:",
             value=name

@@ -3,12 +3,14 @@ import string
 from typing import Any
 import discord
 from discord import colour
+from discord.ext.commands import HelpCommand
 from discord.ext import commands
 import sqlalchemy
 from astrobot import (
     mute_timers,
     util
 )
+from astrobot.checks import invoker_is_lower_rank
 from astrobot.colors import MochjiColor
 from astrobot.user_sys.database import session as db_session
 from astrobot.user_sys.database import (
@@ -30,7 +32,7 @@ async def unmute(user: discord.Member, guild: discord.Guild, reason=None) -> tup
                     await user.send(embed=discord.Embed(
                         title=f'You have been unmuted in {guild.name}',
                         description=f'Reason: {reason}',
-                        colour=MochjiColor.orange()
+                        colour=MochjiColor.green()
                     ))
                 except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
                     pass
@@ -72,7 +74,8 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Warn a user", help="Warn a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member : discord.Member, *, reason = None, bot_invoked=False, as_dm=True):
+    @commands.check(invoker_is_lower_rank)
+    async def warn(self, ctx, member : discord.Member, *, reason = None, bot_invoked=False):
         if bot_invoked:
             invoker = self.bot.user
         else:
@@ -178,6 +181,7 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Ban a user", help="Ban a given user.", usage="@[user] [reason]")
     @commands.has_permissions(ban_members=True)
+    @commands.check(invoker_is_lower_rank)
     async def ban(self, ctx, member : discord.Member, *, reason = None):
 
         try:
@@ -207,6 +211,7 @@ class Moderation(commands.Cog):
 
     @commands.command(brief="Kick a user", help="Kick a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
+    @commands.check(invoker_is_lower_rank)
     async def kick(self, ctx, member : discord.Member, *, reason = None):
 
         try:
@@ -265,10 +270,15 @@ class Moderation(commands.Cog):
     
     @commands.command()
     @commands.has_permissions(ban_members=True, manage_roles=True)
+    @commands.check(invoker_is_lower_rank)
     async def mute(self, ctx, member: discord.Member, _time: str, *, reason=None):
         for item in db_session.query(_DB_MutedUsers__Obj):
             if int(item.user_id) == int(member.id):
-                await ctx.send(f"**{member}** is already muted!")
+                await ctx.send(embed=discord.Embed(
+                    title=f"{await self.emojis.error()} {member} is already muted!",
+                    colour=MochjiColor.red()
+                    )
+                )
                 return
         _timestamp = int(time.time())
         _mute_length = util.convert_time(_time)[0]
@@ -291,7 +301,7 @@ class Moderation(commands.Cog):
         # attempt to send DM to muted user
         try:
             await member.send(embed=discord.Embed(
-                title=f'You have been muted in {ctx.guild.name} for {_time}.',
+                title=f'{await self.emojis.warning()} You have been muted in {ctx.guild.name} for {_time}.',
                 description=f'Reason: {reason}',
                 colour=MochjiColor.orange()
             ))
@@ -302,12 +312,16 @@ class Moderation(commands.Cog):
         timer = util.Timer(_mute_length, unmute, member, ctx.guild, "Time has been served.")
         mute_timers[f"{member}"] = timer # add new timer to timer list
 
-        await ctx.send(f"**{member}** has successfully been muted.")
+        await ctx.send(embed=discord.Embed(
+            title=f"{await self.emojis.success()} **{member}** has successfully been muted.",
+            colour=MochjiColor.green()
+        ))
         
         return
     
     @commands.command()
     @commands.has_permissions(ban_members=True, manage_roles=True)
+    @commands.check(invoker_is_lower_rank)
     async def unmute(self, ctx, member: discord.Member, *, reason=None):
         successful, err = await unmute(member, ctx.guild, reason=reason)
         if successful:
@@ -315,11 +329,18 @@ class Moderation(commands.Cog):
                 mute_timers[f"{member}"].cancel() # cancel timer
                 mute_timers.pop(f"{member}") # remove timer from list
             except KeyError:
-                await ctx.send(f"**{member}** is not muted!")
+                await ctx.send(embed=discord.Embed(
+                    title=f"{await self.emojis.error()} {member} is not muted!",
+                    colour=MochjiColor.red()
+                    )
+                )
                 return
-            await ctx.send(f"**{member}** has successfully been unmuted.")
+            await ctx.send(embed=discord.Embed(
+                title=f"{await self.emojis.success()} **{member}** has successfully been unmuted.",
+                colour=MochjiColor.green()
+            ))
         else:
-            await ctx.send(f"**Error**: {err}")
+            raise commands.CommandInvokeError(err)
         return
 
     @commands.command()
