@@ -1,9 +1,4 @@
-__version__ = '21.12.3'
+__version__ = '21.12.4'
 __changelog__ = f"""**CHANGELOG**\n
-- added role-checker to moderation commands (fixes cef4a613)
-- made roles in '!whois' command mentions instead of str (also made embed color color of top role)
-- converted responses from '!mute' and '!unmute' commands to embed
+- Update mute system to use discord's new timeout feature
 """
-
-# globs
-mute_timers = {}

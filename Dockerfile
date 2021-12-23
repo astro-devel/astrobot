@@ -19,7 +19,7 @@ ENV LOG_DIR=$workdir/logs
 #update apt package cache
 RUN ["apt", "update"]
 # install postgres and wget
-RUN ["apt", "install", "-y", "postgresql", "wget"]
+RUN ["apt", "install", "-y", "postgresql", "wget", "git"]
 # download waiter script and make executable
 RUN ["wget", "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh"]
 RUN ["chmod", "+x", "wait-for-it.sh"]

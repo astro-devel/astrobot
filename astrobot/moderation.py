@@ -1,4 +1,6 @@
 import time
+import datetime
+from zoneinfo import ZoneInfo
 import string
 from typing import Any
 import discord
@@ -7,38 +9,14 @@ from discord.ext.commands import HelpCommand
 from discord.ext import commands
 import sqlalchemy
 from astrobot import (
-    mute_timers,
     util
 )
 from astrobot.checks import invoker_is_lower_rank
 from astrobot.colors import MochjiColor
 from astrobot.user_sys.database import session as db_session
 from astrobot.user_sys.database import (
-    UserMod__Obj as _DB_UserMod__Obj,
-    MutedUsers__Obj as _DB_MutedUsers__Obj
+    UserMod__Obj as _DB_UserMod__Obj
 )
-
-async def unmute(user: discord.Member, guild: discord.Guild, reason=None) -> tuple[bool, Any]:
-    '''Unmute a given user. Return boolean based on if action was successful or unsuccessful.'''
-    try:
-        for item in db_session.query(_DB_MutedUsers__Obj):
-            if str(item.user_id) == str(user.id):
-                await user.edit(roles=[guild.get_role(role) for role in item.roles])
-                db_session.execute(
-                    sqlalchemy.delete(_DB_MutedUsers__Obj).where(_DB_MutedUsers__Obj.user_id == str(user.id)).execution_options(synchronize_session="fetch")
-                )
-                db_session.commit()
-                try:
-                    await user.send(embed=discord.Embed(
-                        title=f'You have been unmuted in {guild.name}',
-                        description=f'Reason: {reason}',
-                        colour=MochjiColor.green()
-                    ))
-                except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
-                    pass
-        return (True, None)
-    except Exception as err:
-        return (False, err)
 
 class Moderation(commands.Cog):
     def __init__(self, bot) -> None:
@@ -269,34 +247,17 @@ class Moderation(commands.Cog):
                     await ctx.send(embed=embed)
     
     @commands.command()
-    @commands.has_permissions(ban_members=True, manage_roles=True)
+    @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
     async def mute(self, ctx, member: discord.Member, _time: str, *, reason=None):
-        for item in db_session.query(_DB_MutedUsers__Obj):
-            if int(item.user_id) == int(member.id):
-                await ctx.send(embed=discord.Embed(
-                    title=f"{await self.emojis.error()} {member} is already muted!",
-                    colour=MochjiColor.red()
-                    )
-                )
-                return
+        # TODO: check if already muted? attach to member.timeout coro
         _timestamp = int(time.time())
         _mute_length = util.convert_time(_time)[0]
         _unmute_time = _mute_length + _timestamp
-        _roles = [role.id for role in member.roles] # collect all user roles into variable for db storage
-        await member.edit(roles=[ctx.guild.get_role(915841202803326976)]) # reset user roles to just muted role
+        iso_timestamp = datetime.datetime.fromtimestamp(_unmute_time, tz=ZoneInfo("UTC"))
         self.increment_db_count(member, guild_id=ctx.guild.id, mod_type="mute")
 
-        # add user id and user roles to db to recover after mute expires
-        _db_obj = _DB_MutedUsers__Obj(
-            timestamp = _timestamp,
-            unmute_at = _unmute_time,
-            user_id = member.id.__str__(),
-            guild_id = ctx.guild.id,
-            roles = _roles
-        )
-        db_session.add(_db_obj)
-        db_session.commit()
+        await member.timeout(until=iso_timestamp, reason=reason)
 
         # attempt to send DM to muted user
         try:
@@ -308,10 +269,6 @@ class Moderation(commands.Cog):
         except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
 
-        # create timer for unmute
-        timer = util.Timer(_mute_length, unmute, member, ctx.guild, "Time has been served.")
-        mute_timers[f"{member}"] = timer # add new timer to timer list
-
         await ctx.send(embed=discord.Embed(
             title=f"{await self.emojis.success()} **{member}** has successfully been muted.",
             colour=MochjiColor.green()
@@ -320,29 +277,24 @@ class Moderation(commands.Cog):
         return
     
     @commands.command()
-    @commands.has_permissions(ban_members=True, manage_roles=True)
+    @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
     async def unmute(self, ctx, member: discord.Member, *, reason=None):
-        successful, err = await unmute(member, ctx.guild, reason=reason)
-        if successful:
-            try:
-                mute_timers[f"{member}"].cancel() # cancel timer
-                mute_timers.pop(f"{member}") # remove timer from list
-            except KeyError:
-                await ctx.send(embed=discord.Embed(
-                    title=f"{await self.emojis.error()} {member} is not muted!",
-                    colour=MochjiColor.red()
-                    )
-                )
-                return
-            await ctx.send(embed=discord.Embed(
-                title=f"{await self.emojis.success()} **{member}** has successfully been unmuted.",
+        await member.remove_timeout(reason=reason)
+        try:
+            await member.send(embed=discord.Embed(
+                title=f'You have been unmuted in {ctx.guild.name}',
+                description=f'Reason: {reason}',
                 colour=MochjiColor.green()
             ))
-        else:
-            raise commands.CommandInvokeError(err)
+        except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+            pass
+        await ctx.send(embed=discord.Embed(
+            title=f"{await self.emojis.success()} **{member}** has successfully been unmuted.",
+            colour=MochjiColor.green()
+        ))
         return
-
+    """ TODO: update to use discord timeout system
     @commands.command()
     @commands.has_permissions(ban_members=True, manage_roles=True)
     async def get_mutes(self, ctx):
@@ -357,7 +309,8 @@ class Moderation(commands.Cog):
                 inline=True
             )
         await ctx.send(embed=embed)
-
+    """
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         # check message for blocked words

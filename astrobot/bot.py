@@ -7,7 +7,6 @@ from discord.ext import commands
 from astrobot import __version__ as astrobot_v
 from astrobot import (
     __changelog__,
-    mute_timers,
     util,
     moderation
 )
@@ -15,7 +14,6 @@ from astrobot.colors import MochjiColor
 from astrobot.init_cogs import init_cogs
 from astrobot.user_sys.database import (
     CommandLog__Obj as DB_CommandLog__Obj,
-    MutedUsers__Obj as DB_MutedUsers__Obj,
     session as db_session
 )   
 
@@ -97,18 +95,6 @@ def start_client():
 
     @bot.event
     async def on_ready():
-        # re-initialize mute timers, and if any mutes are expired, go ahead and unmute members
-        for item in db_session.query(DB_MutedUsers__Obj):
-            _guild = await bot.fetch_guild(item.guild_id)
-            _user = await _guild.fetch_member(item.user_id)
-            if int(item.unmute_at) - int(time.time()) < 0:
-                successful, err = await moderation.unmute(_user, _guild, "Time has been served.")
-                if not successful:
-                    print(err)
-            else:
-                timer = util.Timer(int(item.unmute_at) - int(time.time()), moderation.unmute, _user, await bot.fetch_guild(item.guild_id), "Time has been served.")
-                mute_timers[f"{_user}"] = timer
-
         print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
     
     @bot.event

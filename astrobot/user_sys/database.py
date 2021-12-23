@@ -20,16 +20,6 @@ class UserMod__Obj(_base):
     warn_count = Column(Integer)
     mute_count = Column(Integer)
 
-class MutedUsers__Obj(_base):
-    __tablename__ = 'muted_users'
-
-    timestamp = Column(String)
-    unmute_at = Column(String)
-    user_id = Column(String, primary_key=True)
-    guild_id = Column(String)
-    roles = Column(JSON)
-    
-
 class CommandLog__Obj(_base):
     __tablename__ = 'command_logs'
 
