@@ -2,15 +2,13 @@ from discord.ext.commands import Bot
 
 def init_cogs(bot: Bot) -> None:
     import os
-    from astrobot.emojis import MochjiMojis
-    from astrobot.error import ErrorHandler
-    from astrobot.management import Management
-    from astrobot.moderation import Moderation
-    from astrobot.test import TestCommands
+    from astrobot.cogs.emojis import MochjiMojis
+    from astrobot.cogs.error import ErrorHandler
+    from astrobot.cogs.management import Management
+    from astrobot.cogs.moderation import Moderation
+    from astrobot.cogs.test import TestCommands
     from astrobot.time import TimeStuffs
-    from astrobot.user import UserInfo
-    #from astrobot.roles import Roles
-    #from astrobot.fm.fm import FMCommands
+    from astrobot.cogs.user import UserInfo
 
     if os.environ.get("DEVEL"):
         # cog(s) that should ONLY be enabled during devel
@@ -24,6 +22,4 @@ def init_cogs(bot: Bot) -> None:
     bot.add_cog(TimeStuffs(bot))
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
-    #bot.add_cog(Roles(bot))
     bot.add_cog(Management(bot))
-    #bot.add_cog(FMCommands(bot))

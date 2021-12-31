@@ -18,7 +18,6 @@ class UserInfo(commands.Cog):
         current_status = member.raw_status
         avatar = member.avatar
         user_id = member.id
-        avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar}" if avatar else None
         _roles = member.roles
         roles = ""
         counter = 0
@@ -55,7 +54,7 @@ class UserInfo(commands.Cog):
         )
 
         if avatar:
-            embed.set_thumbnail(url=avatar_url)
+            embed.set_thumbnail(url=avatar.__str__() if avatar else None)
 
         await ctx.send(embed=embed)
     

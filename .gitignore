@@ -4,6 +4,6 @@ mochji.env
 .venv
 /logs
 /dist
-/astrobot/fm
+/astrobot/archive
 *local
 /docker-compose.yml

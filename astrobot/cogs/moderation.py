@@ -2,9 +2,9 @@ import time
 import datetime
 from zoneinfo import ZoneInfo
 import string
-from typing import Any
 import discord
 from discord import colour
+from discord import embeds
 from discord.ext.commands import HelpCommand
 from discord.ext import commands
 import sqlalchemy
@@ -26,7 +26,7 @@ class Moderation(commands.Cog):
             "cummies"
         ]
 
-    def increment_db_count(self, member, guild_id, mod_type=None):
+    def increment_db_count(self, member, guild_id, mod_type=None) -> None:
         _query = db_session.query(_DB_UserMod__Obj)
         _user = _DB_UserMod__Obj(
             user_id = str(member.id),
@@ -152,7 +152,7 @@ class Moderation(commands.Cog):
             name="**Mutes**",
             value=_user.mute_count
         ).set_thumbnail(
-            url=f"https://cdn.discordapp.com/avatars/{member.id}/{member.avatar}" if member.avatar else None
+            url=member.avatar.__str__() if member.avatar else None
         )
 
         await ctx.send(embed=embed)
@@ -249,8 +249,39 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
+    async def ismuted(self, ctx, member: discord.Member):
+        # TODO: update to use string rep of member instead of Member obj
+        # TODO: re-implement database entries for mutes
+        embed = discord.Embed(title=f"Mute status for {member}:")
+        embed.add_field(
+            name="Status:",
+            value="Muted" if member.communication_disabled_until else "Not Muted"
+        )
+        if member.communication_disabled_until:
+            embed.add_field(
+                name="Reason:",
+                value="NI"
+            ).add_field(
+                name="Muted expiration:",
+                value=util.time_between(datetime.datetime.utcnow(), member.communication_disabled_until.replace(tzinfo=None))
+            ).add_field(
+                name="Muted by:",
+                value="NI"
+            )
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.has_permissions(moderate_members=True)
+    @commands.check(invoker_is_lower_rank)
     async def mute(self, ctx, member: discord.Member, _time: str, *, reason=None):
-        # TODO: check if already muted? attach to member.timeout coro
+        if member.communication_disabled_until: # if user is already timed out, return
+            time_left = util.time_between(datetime.datetime.utcnow(), member.communication_disabled_until.replace(tzinfo=None))
+            await ctx.send(embed=discord.Embed(
+                title=f"{await self.emojis.error()} **{member}** is already muted! Expires in {time_left}",
+                colour=MochjiColor.red()
+            ))
+            return
+
         _timestamp = int(time.time())
         _mute_length = util.convert_time(_time)[0]
         _unmute_time = _mute_length + _timestamp
@@ -280,6 +311,14 @@ class Moderation(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
     async def unmute(self, ctx, member: discord.Member, *, reason=None):
+        if not member.communication_disabled_until:
+            embed = discord.Embed(
+                title=f"{await self.emojis.error()} **{member}** is not muted!",
+                colour=MochjiColor.red()
+            )
+            await ctx.send(embed=embed)
+            return
+        
         await member.remove_timeout(reason=reason)
         try:
             await member.send(embed=discord.Embed(
@@ -294,7 +333,8 @@ class Moderation(commands.Cog):
             colour=MochjiColor.green()
         ))
         return
-    """ TODO: update to use discord timeout system
+
+    """ TODO: reimplement after database added back (see ismuted() TODO)
     @commands.command()
     @commands.has_permissions(ban_members=True, manage_roles=True)
     async def get_mutes(self, ctx):

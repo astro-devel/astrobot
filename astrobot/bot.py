@@ -7,11 +7,10 @@ from discord.ext import commands
 from astrobot import __version__ as astrobot_v
 from astrobot import (
     __changelog__,
-    util,
-    moderation
+    util
 )
 from astrobot.colors import MochjiColor
-from astrobot.init_cogs import init_cogs
+from astrobot.cogs import init_cogs
 from astrobot.user_sys.database import (
     CommandLog__Obj as DB_CommandLog__Obj,
     session as db_session
@@ -95,7 +94,7 @@ def start_client():
 
     @bot.event
     async def on_ready():
-        print(f'Logged in as: {bot.user}, Prefix= "{prefix}"')
+        print(f'Logged in as: {bot.user}, Prefix= "{prefix}", using py-cord version: {discord.__version__} (frozen at commit \'16f9bcb\' for "stability")')
     
     @bot.event
     async def on_command(ctx: commands.context.Context):

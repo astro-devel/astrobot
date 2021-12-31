@@ -9,6 +9,7 @@ services:
     image: postgres
     volumes:
       - ./postgres_data:/var/lib/postgresql:rw
+      - /path/to/host/backup/mount:/path/to/container/backup/directory:rw
     environment:
       POSTGRES_DB:
       POSTGRES_USER:
