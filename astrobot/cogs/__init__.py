@@ -9,6 +9,7 @@ def init_cogs(bot: Bot) -> None:
     from astrobot.cogs.test import TestCommands
     from astrobot.time import TimeStuffs
     from astrobot.cogs.user import UserInfo
+    from astrobot.cogs.logger import Logging
 
     if os.environ.get("DEVEL"):
         # cog(s) that should ONLY be enabled during devel
@@ -23,3 +24,4 @@ def init_cogs(bot: Bot) -> None:
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
     bot.add_cog(Management(bot))
+    bot.add_cog(Logging(bot))
