@@ -58,7 +58,10 @@ class Logging(commands.Cog):
     async def get_logs(self, ctx, member: Optional[discord.Member]):
         if not member:
             member = ctx.author
-        
+        if not os.path.exists(f"{self.LOG_DIR}/commands/{member.name}.log"):
+            await ctx.send(f"Logfile not found for '{member}'...")
+            return
+
         val = str()
         count = 1
         with open(f"{self.LOG_DIR}/commands/{member.name}.log", 'r') as log:
