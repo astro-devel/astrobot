@@ -1,6 +1,5 @@
 import time
 import datetime
-from zoneinfo import ZoneInfo
 import string
 import discord
 from discord import colour
@@ -262,8 +261,8 @@ class Moderation(commands.Cog):
                 name="Reason:",
                 value="NI"
             ).add_field(
-                name="Muted expiration:",
-                value=util.time_between(datetime.datetime.utcnow(), member.communication_disabled_until.replace(tzinfo=None))
+                name="Expires in:",
+                value=util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
             ).add_field(
                 name="Muted by:",
                 value="NI"
@@ -275,7 +274,7 @@ class Moderation(commands.Cog):
     @commands.check(invoker_is_lower_rank)
     async def mute(self, ctx, member: discord.Member, _time: str, *, reason=None):
         if member.communication_disabled_until: # if user is already timed out, return
-            time_left = util.time_between(datetime.datetime.utcnow(), member.communication_disabled_until.replace(tzinfo=None))
+            time_left = util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
             await ctx.send(embed=discord.Embed(
                 title=f"{await self.emojis.error()} **{member}** is already muted! Expires in {time_left}",
                 colour=MochjiColor.red()
@@ -285,7 +284,7 @@ class Moderation(commands.Cog):
         _timestamp = int(time.time())
         _mute_length = util.convert_time(_time)[0]
         _unmute_time = _mute_length + _timestamp
-        iso_timestamp = datetime.datetime.fromtimestamp(_unmute_time, tz=ZoneInfo("UTC"))
+        iso_timestamp = datetime.datetime.fromtimestamp(_unmute_time, tz=datetime.timezone.utc)
         self.increment_db_count(member, guild_id=ctx.guild.id, mod_type="mute")
 
         await member.timeout(until=iso_timestamp, reason=reason)

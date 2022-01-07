@@ -20,14 +20,6 @@ class UserMod__Obj(_base):
     warn_count = Column(Integer)
     mute_count = Column(Integer)
 
-class CommandLog__Obj(_base):
-    __tablename__ = 'command_logs'
-
-    id = Column(Integer, Sequence('command_logs_seq'), primary_key=True)
-    user_id = Column(String)
-    timestamp = Column(String)
-    command = Column(PickleType)
-
 Session = sqlalchemy.orm.sessionmaker(db, future=True)  
 session: sqlalchemy.orm.Session = Session()
 

@@ -11,10 +11,6 @@ from astrobot import (
 )
 from astrobot.colors import MochjiColor
 from astrobot.cogs import init_cogs
-from astrobot.user_sys.database import (
-    CommandLog__Obj as DB_CommandLog__Obj,
-    session as db_session
-) 
 
 class MochjiActivity(discord.Activity):
     def __init__(self):
