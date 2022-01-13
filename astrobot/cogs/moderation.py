@@ -69,7 +69,7 @@ class Moderation(commands.Cog):
             embed.set_footer(text="NOTE: This will not count against your official warnings tally.")
         try:
             await member.send(embed=embed)
-        except discord.errors.Forbidden: # if user only accepts DMs from friends, warn them in server channel
+        except discord.Forbidden: # if user only accepts DMs from friends, warn them in server channel
             embed = discord.Embed(
                 title=f"{await self.emojis.warning()} Warning! {await self.emojis.warning()}",
                 description=f"Warned by: {invoker}\nReason: {reason}",
@@ -177,7 +177,7 @@ class Moderation(commands.Cog):
         if not member.bot:
             try:
                 await member.send(embed=embed)
-            except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+            except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
                 pass
         
         self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='ban')
@@ -207,7 +207,7 @@ class Moderation(commands.Cog):
         if not member.bot:
             try:
                 await member.send(embed=embed)
-            except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+            except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
                 pass
         
         self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='kick')
@@ -296,7 +296,7 @@ class Moderation(commands.Cog):
                 description=f'Reason: {reason}',
                 colour=MochjiColor.orange()
             ))
-        except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+        except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
 
         await ctx.send(embed=discord.Embed(
@@ -325,7 +325,7 @@ class Moderation(commands.Cog):
                 description=f'Reason: {reason}',
                 colour=MochjiColor.green()
             ))
-        except discord.errors.Forbidden: # if user only accepts DMs from friends, nothing to do
+        except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
         await ctx.send(embed=discord.Embed(
             title=f"{await self.emojis.success()} **{member}** has successfully been unmuted.",

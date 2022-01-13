@@ -21,12 +21,12 @@ class UserInfo(commands.Cog):
         _roles = member.roles
         roles = ""
         counter = 0
-
+        
+        _roles.reverse()
         for role in _roles:
             if counter > 10:
                 break
-            if counter == 0:
-                counter += 1
+            if role.name == "@everyone":
                 continue
             roles += f"{role.mention}\n"
             counter += 1

@@ -10,7 +10,7 @@ SQLAlchemy = "^1.4.26"
 psycopg2-binary = "^2.9.1"
 py-cord = {git = "https://github.com/Pycord-Development/pycord.git", rev = "16f9bcb"}
 python-dateutil = "^2.8.2"
-spotipy = "^2.19.0"
+tekore = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -18,10 +18,15 @@ services:
       - 5432:5432
   astrobot:
     image: astrobot
+    volumes:
+      - /path/to/host/log/directory/astrobot:/path/to/container/log/directory:Z
     command: ["./wait-for-it.sh", "postgres:5432", "--", "python3", "-m", "astrobot.bot"]
     environment:
       DATABASE_URL: postgresql://[ DB_USER_NAME ]:[ DB_USER_PASSWORD ]@postgres
       BOT_TOKEN:
+      SPOTIFY_CLIENT_ID:
+      SPOTIFY_CLIENT_SECRET:
+      SPOTIFY_REDIRECT_URI:
     depends_on:
       - postgres
   halys:

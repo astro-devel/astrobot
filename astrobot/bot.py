@@ -1,13 +1,9 @@
 import os
-import time
-import logging
 import discord
 from discord.ext import commands
-
-from astrobot import __version__ as astrobot_v
 from astrobot import (
-    __changelog__,
-    util
+    __version__ as astrobot_v,
+    __changelog__
 )
 from astrobot.colors import MochjiColor
 from astrobot.cogs import init_cogs
@@ -15,7 +11,7 @@ from astrobot.cogs import init_cogs
 class MochjiActivity(discord.Activity):
     def __init__(self):
         super().__init__()
-        self.name = "Mr. Robot"
+        self.name = f"Mr. Robot | v{astrobot_v}"
         self.type = discord.ActivityType.watching
         self.timestamps = {
             "start": 1635626843000
