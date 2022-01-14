@@ -62,7 +62,7 @@ def convert_time(_time: str) -> tuple:
     val = str()
     time_obj = dict()
     seconds = int()
-    timing_letters = ['d', 'D', 'h', 'H', 'm', 'M', 's', 'S']
+    #timing_letters = ['d', 'D', 'h', 'H', 'm', 'M', 's', 'S']
     for char in _time:
         if char in string.ascii_letters:
             time_obj[char] = val

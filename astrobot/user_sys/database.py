@@ -16,6 +16,20 @@ class UserMod__Obj(_base):
     warn_count = Column(Integer)
     mute_count = Column(Integer)
 
+class BugItem_DB(_base):
+    __tablename__ = 'astro_bugs'
+
+    timestamp = Column(String)
+    reporter = Column(String)
+    description = Column(String)
+    reproduction_steps = Column(String)
+    bot_version = Column(String)
+    screenshot_url = Column(String)
+    status = Column(String)
+    priority = Column(String)
+    assigned_to = Column(String)
+    bug_id = Column(String, primary_key=True)
+
 Session = sqlalchemy.orm.sessionmaker(db, future=True)  
 session: sqlalchemy.orm.Session = Session()
 

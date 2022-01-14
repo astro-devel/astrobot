@@ -1,0 +1,2 @@
+class HalysNotTechnician(Exception):
+    pass

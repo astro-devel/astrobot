@@ -1,8 +1,6 @@
 from typing import Optional
 import discord
 from discord.ext import commands
-from discord.ext.commands.core import check
-from astrobot.colors import MochjiColor
 from astrobot.spotify import spotify as sp
 
 class Spotify(commands.Cog):
@@ -26,7 +24,7 @@ class Spotify(commands.Cog):
             error = args[0]
         return f"An Error Occurred: {error}"
 
-    async def _help_message(*args):
+    async def _help_message(self, *args):
         return '''```
 Spotify Module (!sp) Commands:
 
@@ -146,7 +144,7 @@ Spotify Module (!sp) Commands:
             cmd = (self._commands['_error'], ('not_found', ' '.join(args)))
         return cmd
 
-    async def _run(self, ctx, args):
+    async def _run(self, ctx, args) -> Optional[str]:
         cmd, cmd_args = self._parse_args(args)
         return await cmd(ctx, *cmd_args)
 

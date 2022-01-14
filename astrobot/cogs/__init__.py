@@ -1,16 +1,17 @@
+import os
 from discord.ext.commands import Bot
+from astrobot.cogs.emojis import MochjiMojis
+from astrobot.cogs.error import ErrorHandler
+from astrobot.cogs.management import Management
+from astrobot.cogs.moderation import Moderation
+from astrobot.cogs.test import TestCommands
+from astrobot.time import TimeStuffs
+from astrobot.cogs.user import UserInfo
+from astrobot.cogs.logger import Logging
+from astrobot.cogs.spotify import Spotify
+from astrobot.cogs.halys import Halys
 
 def init_cogs(bot: Bot) -> None:
-    import os
-    from astrobot.cogs.emojis import MochjiMojis
-    from astrobot.cogs.error import ErrorHandler
-    from astrobot.cogs.management import Management
-    from astrobot.cogs.moderation import Moderation
-    from astrobot.cogs.test import TestCommands
-    from astrobot.time import TimeStuffs
-    from astrobot.cogs.user import UserInfo
-    from astrobot.cogs.logger import Logging
-    from astrobot.cogs.spotify import Spotify
 
     if os.environ.get("DEVEL"):
         # cog(s) that should ONLY be enabled during devel
@@ -27,3 +28,4 @@ def init_cogs(bot: Bot) -> None:
     bot.add_cog(Management(bot))
     bot.add_cog(Logging(bot))
     bot.add_cog(Spotify(bot))
+    bot.add_cog(Halys(bot))
