@@ -1,7 +1,6 @@
 import os
 import time
 import logging
-from datetime import datetime
 from typing import Optional
 import discord
 from discord.ext import commands
@@ -45,10 +44,9 @@ class Logging(commands.Cog):
                 - *bool: whether or not logging executed successfully
                 - *Optional[str]: the error that was raised if logging failed'''
         try:
-            _time = datetime.utcnow()
-            _time = _time.strftime("%Y-%m-%d %H:%M:%S")
+            _time = int(time.time())
             with open(f"{self.LOG_DIR}/commands/{member.name}.log", 'a') as log:
-                log.write(f"[ {_time} ]::{ctx.command}::{', '.join([a.__str__() for a in ctx.args[1:] if not isinstance(a, commands.Context)])}::{', '.join([k.__str__() for k in ctx.kwargs.values()])}\n")
+                log.write(f"{_time}::{ctx.command}::{', '.join([a.__str__() for a in ctx.args[1:] if not isinstance(a, commands.Context)])}::{', '.join([k.__str__() for k in ctx.kwargs.values()])}\n")
         except Exception as err:
             return (False, err)
 
@@ -68,7 +66,7 @@ class Logging(commands.Cog):
             logs = log.readlines()[-15:]
             for item in logs:
                 _time, command, args, kwargs = item.strip().split('::')
-                val += f"{count}. !{command} {args} {kwargs} {_time}\n".replace('None', '')
+                val += f"{count}. !{command} {args} {kwargs} <t:{_time}:f>\n".replace('None', '')
                 count += 1
         
         embed = discord.Embed(

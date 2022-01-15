@@ -265,7 +265,7 @@ class Halys(commands.Cog):
         if _new_status.lower() == 'new': _bug_item.status = BugStatus().new()
         elif _new_status.lower() == 'assigned':
             if not _bug_item.assigned_to:
-                await ctx.send("Bug needs to be assigned to someone first, use -assign [assignee]") 
+                await ctx.send("Bug needs to be assigned to someone first, use !bug assign [assignee]") 
                 return
             _bug_item.status = BugStatus().assigned()
         elif _new_status.lower() == 'triage': _bug_item.status = BugStatus().triage()
@@ -415,7 +415,7 @@ class Halys(commands.Cog):
             name="**Bot version:**",
             value=_bug_item.bot_version
         ).set_footer(
-            text=f"To see reproduction steps for this bug, run '-reprod {bug_id}'"
+            text=f"To see reproduction steps for this bug, run '!bug reprod {bug_id}'"
         )
         if len(_bug_item.description) > 97:
             embed.add_field(
@@ -483,7 +483,7 @@ class Halys(commands.Cog):
             else:
                 _version = _version.content
         except asyncio.TimeoutError:
-            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '-report' again.")
+            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '!bug report' again.")
             return
 
         ##################### Get issue description
@@ -492,7 +492,7 @@ class Halys(commands.Cog):
         try:
             _description = await self.bot.wait_for("message", timeout=300.0, check=is_same)
         except asyncio.TimeoutError:
-            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '-report' again.")
+            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '!bug report' again.")
             return
 
         _description = _description.content[0:1000] # truncate description if more than 1000 characters
@@ -504,7 +504,7 @@ class Halys(commands.Cog):
             _steps_to_reproduce = await self.bot.wait_for("message", timeout=300.0, check=is_same)
             _steps_to_reproduce = _steps_to_reproduce.content
         except asyncio.TimeoutError:
-            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '-report' again.")
+            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '!bug report' again.")
             return
 
         ##################### Get screenshot
@@ -513,7 +513,7 @@ class Halys(commands.Cog):
         try:
             _screenshots = await self.bot.wait_for("message", timeout=300.0, check=is_same)
         except asyncio.TimeoutError:
-            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '-report' again.")
+            await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '!bug report' again.")
             return
 
         if not _screenshots.content:
@@ -525,13 +525,13 @@ class Halys(commands.Cog):
                 attempts = 1
                 while _screenshots.content != "no":
                     if attempts == 5:
-                        await _report_channel.send("I'm sorry I'm not able to understand you right now. You can try running '-report' again, or if this is a repeated issue, you can file an issue at https://github.com/astro-devel/halys/issues/new, or send an email to my development team at 'astrobot.devel@gmail.com' with the subject '(HELENA REPORTING ISSUE)', with an attached screenshot of the issue, or message logs, if possible.")
+                        await _report_channel.send("I'm sorry I'm not able to understand you right now. You can try running '!bug report' again, or if this is a repeated issue, you can file an issue at https://github.com/astro-devel/halys/issues/new, or send an email to my development team at 'astrobot.devel@gmail.com' with the subject '(HELENA REPORTING ISSUE)', with an attached screenshot of the issue, or message logs, if possible.")
                         return
                     await _report_channel.send("Sorry, I didn't understand that. If you have a screenshot, simply send it as an attachment. If not, say 'no'")
                     try:
                         _screenshots = await self.bot.wait_for("message", timeout=300.0, check=is_same)
                     except asyncio.TimeoutError:
-                        await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '-report' again.")
+                        await _report_channel.send("Sorry, I've timed out. If you want still want to fill out this report, run '!bug report' again.")
                         return
                     attempts += 1
 
@@ -550,7 +550,7 @@ class Halys(commands.Cog):
         ##################### Add bug to database and return bug ID
         self._add_to_db(bug_item)
 
-        await _report_channel.send(f"Alright! Here is your trackable ID! To track the status of this bug, just use the command '-track [BUG_ID]'")
+        await _report_channel.send(f"Alright! Here is your trackable ID! To track the status of this bug, just use the command '!bug track [BUG_ID]'")
         await _report_channel.send(bug_item.bug_id)
         self.bugs[bug_item.bug_id] = bug_item 
         return
@@ -575,7 +575,7 @@ Halys bug reporter commands:
 -\t[ TECHNICIAN ] assign [@user]: assign a bug to a given user, by mention
 -\t[ TECHNICIAN ] deassign [bug ID]: remove assignment from a given bug
 -\t[ TECHNICIAN ] delete [bug ID]: delete a given bug from the database
--\t[ TECHNICIAN ] status [bug ID] [status]: update status for a given bug''')
+-\t[ TECHNICIAN ] status [bug ID] [status]: update status for a given bug```''')
             return None, None
         elif args[0] == "get":
             return (self.commands['get_bugs'], [args[1]] if len(args) > 1 else [])
