@@ -1,1 +1,1 @@
-# spotify integration for astrobot
+"""spotify integration for astrobot"""

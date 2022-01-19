@@ -1,12 +1,11 @@
 import asyncio
-from typing import Union
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import string
 
 
 class Timer:
-    '''
+    """
     [STALE as of 12.23.2021, when the custom mute implementation was replaced with Discord's API's 'communication_disabled_until' module.
     I am keeping it in the project due to possibly needing it at a later time but for right now it serves no purpose, PLEASE do not mess with it.]\n 
     ###############################\n
@@ -16,7 +15,7 @@ class Timer:
         
         - timeout -- time (in seconds) to wait before executing callback
         - callback -- function pointer (**NOT** CORO OBJECT) to execute after timeout
-        - args -- arguments (if applicable) to be run with callback function'''
+        - args -- arguments (if applicable) to be run with callback function"""
     def __init__(self, timeout, callback, *args):
         self._timeout = timeout
         self._callback = callback
@@ -30,7 +29,7 @@ class Timer:
         self._task.cancel()
 
 def time_between(first: datetime, second: datetime) -> str:
-    '''Get timedelta for two datetimes as a formatted string.
+    """Get timedelta for two datetimes as a formatted string.
     
         Arguments:
         
@@ -39,8 +38,7 @@ def time_between(first: datetime, second: datetime) -> str:
         
         Return:
         
-        - *str -- string representation of timedelta object'''
-
+        - *str -- string representation of timedelta object"""
     _delta = relativedelta(second, first)
     years = _delta.years
     months = _delta.months
@@ -58,7 +56,7 @@ def time_between(first: datetime, second: datetime) -> str:
 {secs if secs else ""}{" Seconds." if secs else ""}""".replace('\n', ' ').strip()
 
 def convert_time(_time: str) -> tuple:
-    '''Convert a given time (i.e. '3d1h') to seconds.'''
+    """Convert a given time (i.e. '3d1h') to seconds."""
     val = str()
     time_obj = dict()
     seconds = int()

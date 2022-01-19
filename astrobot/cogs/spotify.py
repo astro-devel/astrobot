@@ -15,7 +15,7 @@ class Spotify(commands.Cog):
             "_getter": self._getter
         }
         self.cached_sessions = dict()
-    
+
     async def _error(self, ctx, err_type, *args):
         error = '**Unknown**'
         if err_type == 'not_found':
@@ -84,20 +84,20 @@ Spotify Module (!sp) Commands:
             user.session.playback_resume()
             return "Resuming playback..."
 
-    async def _play(self, ctx, type, *args):
+    async def _play(self, ctx, playtype, *args):
         user: Optional[sp.SpotifyUserObject] = self.cached_sessions.get(ctx.author.id.__str__(), await self._grab_user_and_cache(ctx.author.id.__str__()))
         if not user:
             return "User could not be found... If you haven't connected your spotify account yet, do that by running '!sp connect'."
-        if type == "track":
+        if playtype == "track":
             track = user.session.search(args[0])[0].items[0]
             user.session.playback_start_tracks([track.id])
             return f"Playing **{track.name}** by **{track.artists[0].name}**..."
         else:
-            return await self._error('generic', f"option '{type}' not recognized...")
+            return await self._error('generic', f"option '{playtype}' not recognized...")
         return
 
     async def _connect(self, ctx, *args):
-        from asyncio import TimeoutError
+        import asyncio
         from urllib.parse import parse_qs
 
         _user = sp.SpotifyUserObject(discord_user_id=ctx.author.id.__str__())
@@ -115,7 +115,7 @@ Spotify Module (!sp) Commands:
             _ret = await self.bot.wait_for('message', timeout=300.0, check=sanity_check)
             _params = parse_qs(_ret.content)
             callback = sp.CallbackObject(_params['code'][0], _params['state'][0])
-        except TimeoutError:
+        except asyncio.TimeoutError:
             await ctx.author.send("Are you still there? Sorry, I had to time out, but if you still want to connect, feel free to run the command '!sp connect' again!")
             return
 

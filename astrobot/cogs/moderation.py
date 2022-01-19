@@ -2,11 +2,7 @@ import time
 import datetime
 import string
 import discord
-from discord import colour
-from discord import embeds
-from discord.ext.commands import HelpCommand
 from discord.ext import commands
-import sqlalchemy
 from astrobot import (
     util
 )

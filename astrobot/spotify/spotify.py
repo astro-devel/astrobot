@@ -33,10 +33,13 @@ class SpotifyUserObject:
                 self.pop_from_db()
 
     def authorize_user(self, callback: CallbackObject) -> tuple[bool, Optional[Exception]]:
-        '''
-            Authorize a User object with given callback details. Sets self.user_token. 
-            Returns tuple with boolean for success and an Exception object (if one occured).
-        '''
+        """Authorize a User object with given callback details. Sets self.user_token.
+
+            Returns:
+                tuple:
+                    - bool - True if successful, False if error thrown
+                    - Optional - Exception object, if thrown
+        """
         try:
             _token = self.auth.request_token(code=callback.code, state=callback.state)
             assert isinstance(_token, spot.RefreshingToken) # this should always return a RefreshingToken, but just in case
@@ -99,7 +102,7 @@ class SpotifyUserObject:
         return True
 
 def __login(user: SpotifyUserObject):
-    '''for testing only, do not this function anywhere besides the REPL!'''
+    """for testing only, do not this function anywhere besides the REPL!"""
     import webbrowser
     from urllib.parse import urlparse
     from urllib.parse import parse_qs

@@ -2,7 +2,6 @@ import time
 import datetime
 import zoneinfo
 import discord
-from discord import colour
 from discord.ext import commands
 from astrobot.colors import MochjiColor
 

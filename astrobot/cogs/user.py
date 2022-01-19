@@ -1,8 +1,5 @@
 import discord
-from discord import colour
-from discord.enums import Status
 from discord.ext import commands
-from astrobot.colors import MochjiColor
 
 class UserInfo(commands.Cog):
     def __init__(self, bot) -> None:
@@ -13,8 +10,6 @@ class UserInfo(commands.Cog):
         name = f"{member.name}#{member.discriminator}"
         joined_guild_at = member.joined_at.date()
         joined_discord_at = member.created_at.date()
-        nickname = member.nick
-        mention = member.mention
         current_status = member.raw_status
         avatar = member.avatar
         user_id = member.id

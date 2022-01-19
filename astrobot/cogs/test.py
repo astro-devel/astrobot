@@ -1,7 +1,5 @@
 import discord
-from discord import embeds
 from discord.ext import commands
-from astrobot.colors import MochjiColor
 
 class TestCommands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:

@@ -19,7 +19,7 @@ bug_stack = []
 class BugPriority:
     def __init__(self) -> None:
         self.Priority = namedtuple('Priority', ["level", "description"])
-    
+
     def init_from(self, level):
         if level == 'LOW': return self.low()
         if level == 'NORMAL': return self.normal()
@@ -70,7 +70,8 @@ class BugItem:
         self.priority = kwargs.get('priority', BugPriority().normal())
         self.delete_at = kwargs.get('delete_at')
     
-    def create_bug_id(self):
+    @staticmethod
+    def create_bug_id():
         from os import urandom as random_bytes
         from hashlib import sha256 as hasher
 
@@ -87,7 +88,7 @@ def convertible(_obj, _cls):
     try:
         _cls(_obj)
         return True
-    except:
+    except Exception:
         return False
 
 #########
@@ -113,7 +114,8 @@ class Halys(commands.Cog):
             "update_status": self.update_status
         }
 
-    def _to_db_type(self, _bugitem: BugItem):
+    @staticmethod
+    def _to_db_type(_bugitem: BugItem):
         return BugItem_DB(
             timestamp = str(_bugitem.timestamp),
             reporter = str(_bugitem.reporter.id),
@@ -265,15 +267,15 @@ class Halys(commands.Cog):
         if _new_status.lower() == 'new': _bug_item.status = BugStatus().new()
         elif _new_status.lower() == 'assigned':
             if not _bug_item.assigned_to:
-                await ctx.send("Bug needs to be assigned to someone first, use !bug assign [assignee]") 
+                await ctx.send("Bug needs to be assigned to someone first, use !bug assign [assignee]")
                 return
             _bug_item.status = BugStatus().assigned()
         elif _new_status.lower() == 'triage': _bug_item.status = BugStatus().triage()
         elif _new_status.lower() == 'open': _bug_item.status = BugStatus().open()
-        elif _new_status.lower() == 'closed': 
+        elif _new_status.lower() == 'closed':
             _bug_item.status = BugStatus().closed()
             _bug_item.assigned_to = None
-        elif _new_status.lower() == 'patched': 
+        elif _new_status.lower() == 'patched':
             _bug_item.status = BugStatus().patched()
             _bug_item.delete_at = int(time.time()) + 2592000 # delete after 30 days
         else: return
@@ -382,7 +384,7 @@ class Halys(commands.Cog):
         
         embed = discord.Embed(
             title = f"Reproduction steps for bug '{bug_id}':",
-            description= _bug_item.reproduction_steps 
+            description= _bug_item.reproduction_steps
         )
 
         await ctx.send(embed=embed)
@@ -552,7 +554,7 @@ class Halys(commands.Cog):
 
         await _report_channel.send(f"Alright! Here is your trackable ID! To track the status of this bug, just use the command '!bug track [BUG_ID]'")
         await _report_channel.send(bug_item.bug_id)
-        self.bugs[bug_item.bug_id] = bug_item 
+        self.bugs[bug_item.bug_id] = bug_item
         return
 
     async def _parse_args(self, ctx, args: str) -> tuple:

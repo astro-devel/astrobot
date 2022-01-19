@@ -1,5 +1,6 @@
-__version__ = '22.1.3.post1'
-__changelog__ = f"""**CHANGELOG**\n
-- update halys messages referring to commands to new syntax ('!bug' instead of '-')
-- update !get_logs to use [formatted timestamps](https://discord.com/developers/docs/reference#message-formatting)
+"""all-encompassing god-level bot for mochjicord"""
+
+__version__ = '22.1.3.post2'
+__changelog__ = """**CHANGELOG**\n
+- refactoring, no changes
 """

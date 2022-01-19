@@ -22,7 +22,7 @@ def start_client():
         prefix = '!' # use ! prefix in production (astrobot)
     else:
         prefix = '.' # use . prefix in development (ObamaBot)
-    
+
     # initialize bot object
     bot = commands.Bot(command_prefix=prefix,
                     intents=discord.Intents.all(),
@@ -33,7 +33,7 @@ def start_client():
 
     @bot.command(brief="Return bot version", help="Return bot version.")
     async def version(ctx):
-        """Return current version bot is running"""
+        """Return current version bot is running."""
         text = f"Current astrobot version is '{astrobot_v}'"
         embed = discord.Embed(
             title=text,
@@ -41,19 +41,21 @@ def start_client():
             color=MochjiColor.white()
         )
         await ctx.send(embed=embed)
-    
-    @bot.command(brief="Return changelog for current bot version", help="Return changelog for current bot version.")
+
+    @bot.command(brief="Return changelog for current bot version",
+                 help="Return changelog for current bot version.")
     async def changelog(ctx):
-        """Return changelog for current bot version"""
+        """Return changelog for current bot version."""
         embed = discord.Embed(
             title=f"**astrobot v{astrobot_v} CHANGELOG**",
             description=__changelog__,
             color=MochjiColor.white()
         )
         await ctx.send(embed=embed)
-    @bot.command(brief="Delete all DMs from bot", help="Delete all DMs recieved from bot.")
+    @bot.command(brief="Delete all DMs from bot",
+                 help="Delete all DMs recieved from bot.")
     async def delete_dm_history(ctx):
-        """Delete all DMs from bot"""
+        """Delete all DMs from bot."""
         await ctx.author.create_dm() # attempt to open DMChannel with user
         channel = ctx.author.dm_channel
         if channel: # if user is able to recieve DMs

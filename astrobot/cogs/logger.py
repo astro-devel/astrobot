@@ -14,7 +14,7 @@ class Logging(commands.Cog):
             os.mkdir(f"{self.LOG_DIR}/commands/")
         if not http_logger_init[0]:
             SystemExit(http_logger_init[1])
-        
+
     def init_discord_http_logger(self) -> tuple[bool, Optional[str]]:
         '''Initialize pycord's logger for the Discord API HTTP/WebSocket connection
         

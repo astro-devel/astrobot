@@ -30,7 +30,7 @@ class BugItem_DB(_base):
     assigned_to = Column(String)
     bug_id = Column(String, primary_key=True)
 
-Session = sqlalchemy.orm.sessionmaker(db, future=True)  
+Session = sqlalchemy.orm.sessionmaker(db, future=True)
 session: sqlalchemy.orm.Session = Session()
 
 _base.metadata.create_all(db)
