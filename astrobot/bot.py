@@ -13,9 +13,6 @@ class MochjiActivity(discord.Activity):
         super().__init__()
         self.name = f"Mr. Robot | v{astrobot_v}"
         self.type = discord.ActivityType.watching
-        self.timestamps = {
-            "start": 1635626843000
-        }
 
 def start_client():
     if not os.environ.get("DEVEL"):
@@ -78,7 +75,7 @@ def start_client():
 
     @bot.event
     async def on_ready():
-        print(f'Logged in as: {bot.user}, Prefix= "{prefix}", using py-cord version: {discord.__version__} (frozen at commit \'16f9bcb\' for "stability")')
+        print(f'Logged in as: {bot.user}, Prefix= "{prefix}", using py-cord version: {discord.__version__}')
 
     bot.run(os.environ["BOT_TOKEN"])
 

@@ -3,7 +3,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import string
 
-
 class Timer:
     """
     [STALE as of 12.23.2021, when the custom mute implementation was replaced with Discord's API's 'communication_disabled_until' module.

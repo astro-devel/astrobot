@@ -84,13 +84,6 @@ class BugItem:
         bug_stack.append(_get_id())
         return bug_stack[-1]
 
-def convertible(_obj, _cls):
-    try:
-        _cls(_obj)
-        return True
-    except Exception:
-        return False
-
 #########
 ##      halys Cog
 #########
@@ -139,7 +132,7 @@ class Halys(commands.Cog):
             screenshot_url = _db_bugitem.screenshot_url,
             status = BugStatus().init_from(_db_bugitem.status),
             priority = BugPriority().init_from(_db_bugitem.priority),
-            assigned_to = int(_db_bugitem.assigned_to) if convertible(_db_bugitem.assigned_to, int) else None,
+            assigned_to = int(_db_bugitem.assigned_to) if _db_bugitem.assigned_to.isdecimal() else None,
             bug_id = _db_bugitem.bug_id
         )
 

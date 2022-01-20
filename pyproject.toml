@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "astrobot"
-version = "22.1.3.post2"
+version = "22.1.4"
 description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
@@ -8,7 +8,7 @@ authors = ["kevinshome <noah.tanner7@gmail.com>"]
 python = "^3.8"
 SQLAlchemy = "^1.4.26"
 psycopg2-binary = "^2.9.1"
-py-cord = {git = "https://github.com/Pycord-Development/pycord.git", rev = "16f9bcb"}
+py-cord = {git = "https://github.com/Pycord-Development/pycord.git"}
 python-dateutil = "^2.8.2"
 tekore = "^4.1.0"
 

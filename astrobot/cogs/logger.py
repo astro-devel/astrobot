@@ -3,7 +3,11 @@ import time
 import logging
 from typing import Optional
 import discord
-from discord.ext import commands
+from discord.ext import (
+    commands,
+    pages as pagination
+)
+from astrobot.types import FlushingString
 
 class Logging(commands.Cog):
     def __init__(self, bot) -> None:
@@ -60,20 +64,28 @@ class Logging(commands.Cog):
             await ctx.send(f"Logfile not found for '{member}'...")
             return
 
-        val = str()
-        count = 1
+        def append_vals(l: list, v: str):
+            l.append(discord.Embed(
+                title=f"Recent commands for user '{member}'",
+                description=v
+            ))
+
+        pages = list()
         with open(f"{self.LOG_DIR}/commands/{member.name}.log", 'r') as log:
-            logs = log.readlines()[-15:]
-            for item in logs:
-                _time, command, args, kwargs = item.strip().split('::')
-                val += f"{count}. !{command} {args} {kwargs} <t:{_time}:f>\n".replace('None', '')
-                count += 1
-        
-        embed = discord.Embed(
-            title=f"Recent commands for user '{member}'",
-            description=val
-        )
-        await ctx.send(embed=embed)
+            logs = log.readlines()
+            logs.reverse()
+            val = FlushingString()
+            max_len = 14
+            for x in range(len(logs)):
+                _time, command, args, kwargs = logs[x].strip().split('::')
+                val += f"[ **!{command} {args} {kwargs}** ]\a\a\a\a<t:{_time}:f>\n".replace('None', '')
+                if x == max_len:
+                    append_vals(pages, val.flush())
+                    max_len += 15
+            if val: append_vals(pages, val)
+
+        paginator = pagination.Paginator(pages=pages)
+        await paginator.send(ctx)
 
 
     @commands.Cog.listener()
