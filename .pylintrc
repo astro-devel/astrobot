@@ -1,0 +1,19 @@
+[MASTER]
+jobs=0
+fail-under=0
+ignore=database.py
+
+[MESSAGES CONTROL]
+disable=
+    line-too-long,
+    invalid-name,
+    broad-except,
+    expression-not-assigned,
+    no-name-in-module,
+    no-member,
+    protected-access,
+    input-builtin
+
+[SIMILARITIES]
+ignore-comments=yes
+ignore-docstrings=yes

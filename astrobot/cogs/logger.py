@@ -1,7 +1,7 @@
 import os
 import time
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 import discord
 from discord.ext import (
     commands,
@@ -19,7 +19,7 @@ class Logging(commands.Cog):
         if not http_logger_init[0]:
             SystemExit(http_logger_init[1])
 
-    def init_discord_http_logger(self) -> tuple[bool, Optional[str]]:
+    def init_discord_http_logger(self) -> Tuple[bool, Optional[str]]:
         '''Initialize pycord's logger for the Discord API HTTP/WebSocket connection
         
             Returns:
@@ -40,7 +40,7 @@ class Logging(commands.Cog):
 
         return (True, None)
     
-    def astro_log_cmd(self, ctx: commands.Context, member: discord.Member) -> tuple[bool, Optional[str]]:
+    def astro_log_cmd(self, ctx: commands.Context, member: discord.Member) -> Tuple[bool, Optional[str]]:
         '''Log a command
         
             Returns:

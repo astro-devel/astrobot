@@ -1,4 +1,3 @@
-from operator import ge
 from typing import Optional
 from datetime import timedelta
 import discord
@@ -77,15 +76,15 @@ Spotify Module (!sp) Commands:
             return "User could not be found... If you haven't connected your spotify account yet, do that by running '!sp connect'."
         
         def get_progress_bar(progress: int, duration: int):
-            _prog = int(progress * 30 / duration)
-            bar = '['
+            _prog = progress * 30 // duration
+            prog_bar = '['
             for i in range(1, 30):
                 if i <= _prog:
-                    bar += '+'
+                    prog_bar += '+'
                 else:
-                    bar += ' -'
-            bar += ']'
-            return bar
+                    prog_bar += ' -'
+            prog_bar += ']'
+            return prog_bar
 
         playback_item = user.session.playback()
         track = playback_item.item

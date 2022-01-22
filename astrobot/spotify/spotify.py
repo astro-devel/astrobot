@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 import tekore as spot
 from tekore._auth.scope import Scope
 from astrobot.spotify import database as db
@@ -32,7 +32,7 @@ class SpotifyUserObject:
             if obj.user_id == self.discord_user_id:
                 self.pop_from_db()
 
-    def authorize_user(self, callback: CallbackObject) -> tuple[bool, Optional[Exception]]:
+    def authorize_user(self, callback: CallbackObject) -> Tuple[bool, Optional[Exception]]:
         """Authorize a User object with given callback details. Sets self.user_token.
 
             Returns:
@@ -42,7 +42,10 @@ class SpotifyUserObject:
         """
         try:
             _token = self.auth.request_token(code=callback.code, state=callback.state)
-            assert isinstance(_token, spot.RefreshingToken) # this should always return a RefreshingToken, but just in case
+            try:
+                assert isinstance(_token, spot.RefreshingToken) # this should always return a RefreshingToken, but just in case
+            except AssertionError:
+                return (False, f"Tekore authenticator did not return RefreshingToken (rtype: {_token.__class__.__name__}). This should **never** happen, and is *probably* not an astrobot issue. Please try your request again. If the issue persists, file a bug report.")
             self.user_token = _token
         except Exception as err:
             return (False, err)
