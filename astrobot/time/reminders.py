@@ -2,7 +2,7 @@ import time
 from typing import Optional
 import sqlalchemy
 import discord
-from discord.ext import commands
+from discord.ext import commands, pages
 from astrobot.colors import MochjiColor
 from astrobot import util
 from . import database as db
@@ -61,13 +61,23 @@ class Reminders(commands.Cog):
         if args:
             args = args.split()
         if args[0] == "list" or not args:
-            timer_list = str()
+            if not self.bot.remindme_timers[ctx.author.id]:
+                await ctx.send(embed=discord.Embed(title=f"{self.emojis.error} No active reminders found for {ctx.author}."))
+                return
+
+            page_list = list()
             for timer in self.bot.remindme_timers[ctx.author.id]:
-                timer_list += f"\'{timer.reminder_text}\' <t:{timer.expires_at}>\n"
-            await ctx.send(embed=discord.Embed(
-                title=f"Active reminders for {ctx.author}",
-                description=timer_list
-            ))
+                page_list.append(discord.Embed(
+                    title=f"Active reminders for {ctx.author}"
+                ).add_field(
+                    name="Reminder",
+                    value=timer.reminder_text
+                ).add_field(
+                    name="Date",
+                    value=f"<t:{timer.expires_at}>"
+                ))
+            paginator = pages.Paginator(pages=page_list)
+            await paginator.send(ctx)
         elif args[0] == "delete" or args[0] == "del":
             item_to_delete = self.bot.remindme_timers[ctx.author.id][int(args[1]) - 1]
             item_to_delete.cancel()
