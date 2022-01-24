@@ -15,8 +15,8 @@ class TestCommands(commands.Cog):
     @commands.command()
     async def emochji(self, ctx):
         embed = discord.Embed(
-            title = await self.emojis.success(),
-            description = await self.emojis.warning()
+            title = self.emojis.success,
+            description = self.emojis.warning
         )
         await ctx.send(embed=embed)
     

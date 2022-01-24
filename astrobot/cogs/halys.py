@@ -22,17 +22,13 @@ class BugPriority:
 
     def init_from(self, level):
         if level == 'LOW': return self.low()
-        if level == 'NORMAL': return self.normal()
         if level == 'MEDIUM': return self.medium()
         if level == 'HIGH': return self.high()
         if level == 'CRUCIAL': return self.crucial()
-        if level == 'EMERGENCY': return self.emergency()
     def low(self): return self.Priority(level="LOW", description="")
-    def normal(self): return self.Priority(level="NORMAL", description="")
     def medium(self): return self.Priority(level="MEDIUM", description="")
     def high(self): return self.Priority(level="HIGH", description="")
     def crucial(self): return self.Priority(level="CRUCIAL", description="")
-    def emergency(self): return self.Priority(level="EMERGENCY", description="")
 
 class BugStatus:
     def __init__(self) -> None:
@@ -232,11 +228,9 @@ class Halys(commands.Cog):
             return
 
         if _new_priority.lower() == 'low': _bug_item.priority = BugPriority().low()
-        if _new_priority.lower() == 'normal': _bug_item.priority = BugPriority().normal()
         if _new_priority.lower() == 'medium': _bug_item.priority = BugPriority().medium()
         if _new_priority.lower() == 'high': _bug_item.priority = BugPriority().high()
         if _new_priority.lower() == 'crucial': _bug_item.priority = BugPriority().crucial()
-        if _new_priority.lower() == 'emergency': _bug_item.priority = BugPriority().emergency()
         else: return
 
         self._flush_to_db(_bug_item)

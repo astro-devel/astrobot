@@ -5,7 +5,7 @@ from astrobot.cogs.error import ErrorHandler
 from astrobot.cogs.management import Management
 from astrobot.cogs.moderation import Moderation
 from astrobot.cogs.test import TestCommands
-from astrobot.time import TimeStuffs
+from astrobot.time import *
 from astrobot.cogs.user import UserInfo
 from astrobot.cogs.logger import Logging
 from astrobot.cogs.spotify import Spotify
@@ -23,6 +23,7 @@ def init_cogs(bot: Bot) -> None:
     bot.add_cog(UserInfo(bot))
     bot.add_cog(MochjiMojis(bot))
     bot.add_cog(TimeStuffs(bot))
+    bot.add_cog(Reminders(bot))
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
     bot.add_cog(Management(bot))

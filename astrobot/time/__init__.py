@@ -4,13 +4,14 @@ import zoneinfo
 import discord
 from discord.ext import commands
 from astrobot.colors import MochjiColor
+from .reminders import Reminders
+from .timers import *
 
 class TimeStuffs(commands.Cog):
     def __init__(self, bot) -> None:
-        self.bot = bot
+        self.bot: discord.Bot = bot
         self.timezones = zoneinfo.available_timezones()
-        self.emojis = None
-    
+
     @commands.command()
     async def time(self, ctx, tz: str):
         assert tz in self.timezones
@@ -40,6 +41,5 @@ class TimeStuffs(commands.Cog):
         )
         await ctx.send(embed=embed)
     '''
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.emojis = self.bot.get_cog('MochjiMojis')
+
+__all__ = ["TimeStuffs", "Reminders"]

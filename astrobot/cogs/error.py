@@ -17,16 +17,16 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
         elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.CheckFailure):
-            text = f"{await self.emojis.error()} You are not authorized to use this command!"
+            text = f"{self.emojis.error} You are not authorized to use this command!"
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
         elif isinstance(error, commands.BotMissingPermissions):
-            text = f"{await self.emojis.error()} Sorry, I'm not allowed to do that here. :("
+            text = f"{self.emojis.error} Sorry, I'm not allowed to do that here. :("
             embed = discord.Embed(title=text, colour=MochjiColor.red())
             await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
-        text = f"{await self.emojis.error()} Uncaught error occured. Hopefully this will help:"
+        text = f"{self.emojis.error} Uncaught error occured. Hopefully this will help:"
         err_type = str(type(error)).split('.')[-1].replace("'", "")
         err = f"<{err_type} {error}"
         embed = discord.Embed(
