@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import timedelta
+import base64
 import discord
 from discord.ext import commands
 from astrobot.spotify import spotify as sp
@@ -139,7 +140,6 @@ Spotify Module (!sp) Commands:
             return f"Playing **{track_name}** by **{track.artists[0].name}**..."
         else:
             return await self._error('generic', f"option '{playtype}' not recognized...")
-        return
 
     async def _connect(self, ctx, *args):
         import asyncio
@@ -158,7 +158,7 @@ Spotify Module (!sp) Commands:
         await ctx.author.send("After you sign in, you will be given a code to send back to me. Once I get that code, you'll be logged in and ready to go! (I'll wait for 5 minutes, but after that I'll have to time out.)")
         try:
             _ret = await self.bot.wait_for('message', timeout=300.0, check=sanity_check)
-            _params = parse_qs(_ret.content)
+            _params = parse_qs(base64.b64decode(_ret.content.encode('utf-8')).decode('utf-8'))
             callback = sp.CallbackObject(_params['code'][0], _params['state'][0])
         except asyncio.TimeoutError:
             await ctx.author.send("Are you still there? Sorry, I had to time out, but if you still want to connect, feel free to run the command '!sp connect' again!")
