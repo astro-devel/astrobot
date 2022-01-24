@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "astrobot"
-version = "22.1.5.post1"
+version = "22.1.6"
 description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
@@ -14,6 +14,7 @@ tekore = "^4.1.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
+mypy = "^0.931"
 
 [build-system]
 requires = ["poetry>=1.1.11"]

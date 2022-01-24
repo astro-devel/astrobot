@@ -2,6 +2,7 @@
 __pycache__
 mochji.env
 .venv
+.mypy_cache
 /logs
 /dist
 /astrobot/archive

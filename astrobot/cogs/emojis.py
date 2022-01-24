@@ -4,7 +4,7 @@ class MochjiMojis(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
     
-    @commands.command()
+    @commands.command(hidden=True)
     async def sosadge(self, ctx):
         await ctx.send(self.sadge)
 

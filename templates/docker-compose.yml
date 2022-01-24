@@ -17,10 +17,10 @@ services:
     ports:
       - 5432:5432
   astrobot:
-    image: astrobot
+    image: ghcr.io/astro-devel/astrobot:master
     volumes:
       - /path/to/host/log/directory/astrobot:/path/to/container/log/directory:Z
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "python3", "-m", "astrobot.bot"]
+    command: ["wait-for-it", "postgres:5432", "--strict", "--", "python3", "-m", "astrobot.bot"]
     environment:
       DATABASE_URL: postgresql://[ DB_USER_NAME ]:[ DB_USER_PASSWORD ]@postgres
       BOT_TOKEN:
