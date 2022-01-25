@@ -63,7 +63,7 @@ class BugItem:
         self.status = kwargs.get('status', BugStatus().new())
         self.assigned_to = kwargs.get('assigned_to')
         self.bug_id = kwargs.get('bug_id', self.create_bug_id())
-        self.priority = kwargs.get('priority', BugPriority().normal())
+        self.priority = kwargs.get('priority', BugPriority().medium())
         self.delete_at = kwargs.get('delete_at')
     
     @staticmethod

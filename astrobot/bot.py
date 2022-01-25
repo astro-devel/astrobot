@@ -16,33 +16,28 @@ from astrobot.time import (
     RemindersTimer
 )
 
-class MochjiActivity(discord.Activity):
-    def __init__(self):
-        super().__init__()
-        self.name = f"Mr. Robot | v{astrobot_v}"
-        self.type = discord.ActivityType.watching
-
 class AstrobotHelpCommand(commands.DefaultHelpCommand):
     def __init__(self, **options):
         super().__init__(**options)
 
 class Astrobot(commands.Bot):
-    def __init__(self, help_command=AstrobotHelpCommand(), **options):
-
-        if not os.environ.get("DEVEL"):
-            prefix = '!' # use ! prefix in production (astrobot)
-        else:
-            prefix = '.' # use . prefix in development (ObamaBot)
-
-        super().__init__(prefix, help_command, **options)
+    def __init__(self, **options):
+        super().__init__(
+            '.' if os.environ.get("DEVEL") else '!', # '!' if production, '.' if development
+            AstrobotHelpCommand(), # astrobot custom help command
+            intents=discord.Intents.all(), # init all intents
+            activity=discord.Game( # set activity text
+                name=f"v{astrobot_v} | run !help for help"
+            ),
+            **options)
+        
+        # custom astrobot attrs 
         self.remindme_timers = collections.defaultdict(list)
 
 def start_client():
 
     # initialize bot object
-    bot = Astrobot(
-        intents=discord.Intents.all(),
-        activity=MochjiActivity())
+    bot = Astrobot()
 
     # initialize all bot cogs
     init_cogs(bot)
