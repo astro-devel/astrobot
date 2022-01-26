@@ -3,3 +3,4 @@ SQLAlchemy >= 1.4.26
 psycopg2-binary >= 2.9.1
 python-dateutil >= 2.8.2
 tekore >= 4.1.0
+python-dotenv >= 0.19.2
