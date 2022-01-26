@@ -6,14 +6,6 @@ def is_victor(ctx):
     """check to see if invoking user is victorisasleep"""
     return ctx.author.id == 593511728973742082
 
-
-def always_false(ctx):
-    """always returns false; used for testing"""
-    return False
-def always_true(ctx):
-    """always returns true; used for testing"""
-    return True
-
 def invoker_is_lower_rank(ctx):
     """check if invoker is above victim in role hierarchy"""
     if ctx.author.bot or ctx.message.content[1:] == 'help' or ctx.author == ctx.guild.owner:

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from sqlalchemy import alias
+from astrobot import colors
 from astrobot.colors import MochjiColor
 from astrobot import util
 
@@ -9,6 +9,38 @@ class Management(commands.Cog):
         self.bot: discord.Bot = bot
         self.emojis = None
     
+    @commands.command()
+    async def serverinfo(self, ctx):
+        bots=list()
+        for user in ctx.guild.members:
+            if user.bot:
+                bots.append(user)
+        embed = discord.Embed(
+            title=f"Server stats for {ctx.guild}",
+            color=colors.BLACK
+        ).add_field(
+            name="Members:",
+            value=ctx.guild.member_count
+        ).add_field(
+            name="Bots:",
+            value=len(bots)
+        ).add_field(
+            name="Server Owner:",
+            value=ctx.guild.owner.mention
+        ).add_field(
+            name="Server Boosters:",
+            value=len(ctx.guild.premium_subscribers)
+        ).add_field(
+            name="Server Boosts:",
+            value=ctx.guild.premium_subscription_count
+        ).add_field(
+            name="Server Created:",
+            value=ctx.guild.created_at.date()
+        )
+        embed.set_thumbnail(url=ctx.guild.icon.url)
+        await ctx.send(embed=embed)
+        return
+
     @commands.command(brief="Get slowmode status for current channel", help="Get slowmode status for current channel.")
     async def slowmode_status(self, ctx):
         slowmode: int = ctx.channel.slowmode_delay

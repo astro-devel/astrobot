@@ -14,8 +14,7 @@ The all-encompassing, god-level bot for mochjicord.
 </div>
 
 # Environment
-### DISCLAIMER: This is not true yet, please don't take it as such..
-Astrobot uses multiple environment variables so that things like secret tokens and database credentials are not hardcoded into the codebase. These variables are managed with [python-dotenv](https://pypi.org/project/python-dotenv/), which takes these variables from a '.env' file located in the root directory of the project. A template of this file can be found in [templates/.env.default](#).
+Astrobot uses multiple environment variables so that things like secret tokens and database credentials are not hardcoded into the codebase. These variables are managed with [python-dotenv](https://pypi.org/project/python-dotenv/), which takes these variables from a '.env' file located in the root directory of the project. A template of this file can be found in [templates/.env.default](https://github.com/astro-devel/astrobot/blob/master/templates/.env.default).
 
 # Building & running
 The bot can be run either locally, or in docker. We recommend managing dependencies with [Poetry](https://python-poetry.org/), but they can be installed with pip (preferably inside of a [virtualenv](https://virtualenv.pypa.io/en/latest/)). In order to set up the environment, and run the bot, run the following commands:
@@ -29,6 +28,7 @@ poetry shell
 
 python3 -m virtualenv .venv
 source .venv/bin/activate
+pip install -r requirements.txt
 
 # set up environment variables
 

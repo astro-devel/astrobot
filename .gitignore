@@ -1,6 +1,6 @@
 .DS_Store
 __pycache__
-mochji.env
+*.env
 .venv
 .mypy_cache
 /logs

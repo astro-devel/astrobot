@@ -1,5 +1,10 @@
+# initialize environment variables
+import dotenv
+dotenv.load_dotenv()
+
 import os
 import time
+import asyncio
 import collections
 import discord
 from discord.ext import commands
@@ -72,12 +77,9 @@ def start_client():
         if channel: # if user is able to recieve DMs
             async for message in channel.history():
                 if message.author == bot.user:
-                    # there's gotta be a better way to do this bc what
-                    # ends up happening is there are a lot of user messages and
-                    # deletion thread starts getting hung up
-                    #
                     # TODO: implement method for auto-skipping over known non-bot msgs
                     await message.delete()
+                    await asyncio.sleep(1)
         else: # if user is not able to recieve DMs
             return
         embed = discord.Embed(

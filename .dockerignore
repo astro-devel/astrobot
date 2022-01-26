@@ -3,10 +3,14 @@ dist
 local
 logs
 *.env
+.pylintrc
+bandit.yml
+.github
 README
 *.lock
 .venv
+.mypy_cache
 .gitignore
-/astrobot/fm
+/astrobot/archive
 /Dockerfile
 /docker-compose.yml

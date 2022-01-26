@@ -11,6 +11,7 @@ psycopg2-binary = "^2.9.1"
 py-cord = {git = "https://github.com/Pycord-Development/pycord.git"}
 python-dateutil = "^2.8.2"
 tekore = "^4.1.0"
+python-dotenv = "^0.19.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
