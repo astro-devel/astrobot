@@ -3,7 +3,7 @@
 
 The all-encompassing, god-level bot for mochjicord.
 
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/dev/peps/pep-0020/#the-zen-of-python)
 [![code-size](https://img.shields.io/github/languages/code-size/astro-devel/astrobot)](#)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a298c9e39bcb4428a033f25d02f0d4b4)](https://www.codacy.com/gh/astro-devel/astrobot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=astro-devel/astrobot&amp;utm_campaign=Badge_Grade)
 [![docker-workflow](https://github.com/astro-devel/astrobot/actions/workflows/docker-image.yml/badge.svg?branch=master&event=push)](https://github.com/astro-devel/astrobot/actions/workflows/docker-image.yml)
