@@ -44,7 +44,11 @@ class Astrobot(commands.Bot):
     @staticmethod
     def fetch_blocked_words() -> list:
         bwl = list()
-        with open(os.environ["BLOCKED_WORDS_LIST"], 'r') as f:
+        bwl_filepath = os.environ["BLOCKED_WORDS_LIST"]
+        if not os.path.exists(bwl_filepath):
+            open(bwl_filepath, 'a').close()
+            return bwl
+        with open(bwl_filepath, 'r') as f:
             for line in f.readlines():
                 bwl.append(line.strip())
         return bwl
