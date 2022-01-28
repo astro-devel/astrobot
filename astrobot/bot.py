@@ -8,14 +8,14 @@ import asyncio
 import collections
 import discord
 from discord.ext import commands
-from astrobot import (
+from . import (
     __version__ as astrobot_v,
-    __changelog__,
-    util
+    __changelog__
 )
-from astrobot.colors import MochjiColor
-from astrobot.cogs import init_cogs
-from astrobot.time import (
+from .types import MochjiMojis
+from .colors import MochjiColor
+from .cogs import init_cogs
+from .time import (
     database as timedb,
     Reminders,
     RemindersTimer
@@ -38,6 +38,21 @@ class Astrobot(commands.Bot):
         
         # custom astrobot attrs 
         self.remindme_timers = collections.defaultdict(list)
+        self.custom_emojis = None
+        self.blocked_words = self.fetch_blocked_words()
+    
+    @staticmethod
+    def fetch_blocked_words() -> list:
+        bwl = list()
+        with open(os.environ["BLOCKED_WORDS_LIST"], 'r') as f:
+            for line in f.readlines():
+                bwl.append(line.strip())
+        return bwl
+    
+    def sync_blocked_words(self) -> None:
+        with open(os.environ["BLOCKED_WORDS_LIST"], 'w') as f:
+            for word in self.blocked_words:
+                f.write(f"{word}\n")
 
 def start_client():
 
@@ -68,8 +83,8 @@ def start_client():
             color=MochjiColor.white()
         )
         await ctx.send(embed=embed)
-    @bot.command(brief="Delete all DMs from bot",
-                 help="Delete all DMs recieved from bot.")
+    @bot.command(brief="Delete all DMs from astrobot",
+                 help="Delete all DMs recieved from astrobot.")
     async def delete_dm_history(ctx):
         """Delete all DMs from bot."""
         await ctx.author.create_dm() # attempt to open DMChannel with user
@@ -83,10 +98,9 @@ def start_client():
         else: # if user is not able to recieve DMs
             return
         embed = discord.Embed(
-            title=f"{await bot.get_cog('MochjiMojis').success()} Successfully deleted all my messages to you.",
-            footer="NOTE: this does not affect your server warn/kick counts.",
+            title=f"{bot.custom_emojis.success} Successfully deleted all my messages to you.",
             color=MochjiColor.green()
-        )
+        ).set_footer(text="NOTE: this does not affect your server warn/kick counts.")
         await ctx.send(embed=embed)
 
     @bot.event
@@ -105,6 +119,14 @@ def start_client():
                 bot.remindme_timers[int(timer.user_id)].append(reminder_timer)
                 _reminder_count += 1
             return _reminder_count
+        
+        emoji_guild = bot.get_guild(483461183496519698)
+        bot.custom_emojis = MochjiMojis(
+            warning = await emoji_guild.fetch_emoji(905755522739892274),
+            error = await emoji_guild.fetch_emoji(905755493111312394),
+            success = await emoji_guild.fetch_emoji(905755460446060544),
+            sadge = await emoji_guild.fetch_emoji(935004762733158452)
+        )
 
         print(f"Reinitialized {await reinit_reminders()} reminders.")
         print(f'Logged in as: {bot.user}, Prefix= "{bot.command_prefix}", using py-cord version: {discord.__version__}')

@@ -1,10 +1,8 @@
 """all-encompassing god-level bot for mochjicord"""
 
-__version__ = '22.1.6'
+__version__ = '22.1.7'
 __changelog__ = """**CHANGELOG**\n
-- added serverinfo command
-- [BTS] update envar handling to python-dotenv
-- [BTS] fixed rate-limiting issue with delete_dm_history (sleep 1s between deletions)
-- [BTS] deprecate MochjiColor and add color constants
-- [BTS] remove checks.always_true() and checks.always_false()
+- create 'blockword' command, used to add item to blocked words list
+- [BTS] delete emojis.py, add MochjiMojis dataclass to types.py, and move custom emojis to Astrobot.custom_emojis
+- [BTS] move blocked words list to Astrobot.blocked_words and keep them stored in external file
 """

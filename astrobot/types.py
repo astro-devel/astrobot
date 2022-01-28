@@ -1,3 +1,5 @@
+import discord
+from dataclasses import dataclass
 from collections import UserString
 
 class FlushingString(UserString):
@@ -16,3 +18,10 @@ class FlushingString(UserString):
         _tex = self.data
         self.data = ""
         return _tex
+
+@dataclass
+class MochjiMojis:
+    success: discord.Emoji
+    warning: discord.Emoji
+    error: discord.Emoji
+    sadge: discord.Emoji

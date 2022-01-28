@@ -11,7 +11,6 @@ from .timers import RemindersTimer
 class Reminders(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: discord.Bot = bot
-        self.emojis = None
     
     @staticmethod
     async def send_reminder(bot: discord.Bot, channel_id: int, member_id: int, reminder: str, timer: RemindersTimer=None, secs_late: Optional[int]=None):
@@ -52,7 +51,7 @@ class Reminders(commands.Cog):
         db.session.commit()
 
         await ctx.send(embed=discord.Embed(
-            title=f"{self.emojis.success} Got it! Will remind you about: ***'{reminder}'*** on <t:{timer.expires_at}>"
+            title=f"{self.bot.custom_emojis.success} Got it! Will remind you about: ***'{reminder}'*** on <t:{timer.expires_at}>"
         ))
         return
     
@@ -62,7 +61,7 @@ class Reminders(commands.Cog):
             args = args.split()
         if args[0] == "list" or not args:
             if not self.bot.remindme_timers[ctx.author.id]:
-                await ctx.send(embed=discord.Embed(title=f"{self.emojis.error} No active reminders found for {ctx.author}."))
+                await ctx.send(embed=discord.Embed(title=f"{self.bot.custom_emojis.error} No active reminders found for {ctx.author}."))
                 return
 
             page_list = list()
@@ -87,12 +86,8 @@ class Reminders(commands.Cog):
             db.session.commit()
             self.bot.remindme_timers[ctx.author.id].pop(int(args[1]) - 1)
             await ctx.send(embed=discord.Embed(
-                title=f"{self.emojis.success} **Successfully deleted timer!**"
+                title=f"{self.bot.custom_emojis.success} **Successfully deleted timer!**"
             ))
         else:
             raise Exception(f"Command '{' '.join(args)}' not recognized...")
         return
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.emojis = self.bot.get_cog('MochjiMojis')
