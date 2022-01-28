@@ -14,14 +14,15 @@ The all-encompassing, god-level bot for mochjicord.
 </div>
 
 # Environment
-Astrobot uses multiple environment variables so that things like secret tokens and database credentials are not hardcoded into the codebase. These variables are managed with [python-dotenv](https://pypi.org/project/python-dotenv/), which takes these variables from a '.env' file located in the root directory of the project. A template of this file can be found in [templates/.env.default](https://github.com/astro-devel/astrobot/blob/master/templates/.env.default).
+Astrobot uses multiple environment variables so that things like secret tokens and database credentials are not hardcoded into the codebase. These variables are managed with [python-dotenv](https://pypi.org/project/python-dotenv/), which takes these variables from a '.env' file located in the root directory of the project (A template can be found in [templates/.env.default](https://github.com/astro-devel/astrobot/blob/master/templates/.env.default).
 
 # Building & running
 The bot can be run either locally, or in docker. We recommend managing dependencies with [Poetry](https://python-poetry.org/), but they can be installed with pip (preferably inside of a [virtualenv](https://virtualenv.pypa.io/en/latest/)). In order to set up the environment, and run the bot, run the following commands:
 ```
 # using Poetry
 
-poetry install
+poetry install # inlcudes dev dependencies
+poetry install --no-dev # excludes dev dependencies
 poetry shell
 
 # using virtualenv
@@ -30,17 +31,13 @@ python3 -m virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# set up environment variables
-
-source mochji.env
-
 # running the bot
 
 python3 -m astrobot.bot
 ```
 
 # Contributing
-TBA
+see [CONTRIBUTING.md](https://github.com/astro-devel/astrobot/blob/master/CONTRIBUTING.md)
 
 # Links
-TBA
+[Website](https://astroio.herokuapp.com/)

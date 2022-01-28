@@ -16,6 +16,7 @@ python-dotenv = "^0.19.2"
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
 mypy = "^0.931"
+scalene = "^1.4.2"
 
 [build-system]
 requires = ["poetry>=1.1.11"]
