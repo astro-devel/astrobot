@@ -357,7 +357,7 @@ class Moderation(commands.Cog):
         # check message for blocked words
         ctx: commands.Context = await self.bot.get_context(message)
         words = list(set(message.content.split()))
-        if ".blockword" in words:
+        if "!blockword" in words:
             return
         for word in words:
             word: str = word.lower()
