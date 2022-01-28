@@ -345,19 +345,45 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def blockword(self, ctx, word: str):
-        self.bot.blocked_words.append(word)
+        self.bot.blocked_words.append(word.lower())
         self.bot.sync_blocked_words()
         await ctx.send(embed=discord.Embed(
-            title=f"{self.bot.custom_emojis.success} Added word '{word}' to blocked words list.",
+            title=f"{self.bot.custom_emojis.success} Added word '{word.lower()}' to blocked words list.",
             color=colors.GREEN
         ))
+    
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def unblockword(self, ctx, word: str):
+        if word.lower() not in self.bot.blocked_words:
+            await ctx.send(embed=discord.Embed(
+                title=f"{self.bot.custom_emojis.error} '{word.lower()}' is not currently a blocked word.",
+                color=colors.RED
+            ))
+            return
+        self.bot.blocked_words.remove(word.lower())
+        self.bot.sync_blocked_words()
+        await ctx.send(embed=discord.Embed(
+            title=f"{self.bot.custom_emojis.success} Removed word '{word.lower()}' from blocked words list.",
+            color=colors.GREEN
+        ))
+    
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def blockedwords(self, ctx):
+        if not self.bot.blocked_words:
+            await ctx.send("There are currently no blocked words.")
+            return
+        await ctx.send("```\n\
+{0}```".format('\n'.join(self.bot.blocked_words)))
+        
 
     @commands.Cog.listener()
     async def on_message(self, message):
         # check message for blocked words
         ctx: commands.Context = await self.bot.get_context(message)
         words = list(set(message.content.split()))
-        if "!blockword" in words:
+        if "!blockword" in words or ctx.author.bot:
             return
         for word in words:
             word: str = word.lower()

@@ -12,4 +12,4 @@ jobs:
       with:
         webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
         webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-        message: "New push on astrobot.\n\tCommits:\n\t\t${{ github.event.commits[] }}"
+        message: "New push on astrobot.\n\t${{ github.event.head_commit[message] }}"
