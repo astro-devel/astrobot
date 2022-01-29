@@ -6,12 +6,12 @@ authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-SQLAlchemy = "^1.4.26"
-psycopg2-binary = "^2.9.1"
-py-cord = {git = "https://github.com/Pycord-Development/pycord.git"}
-python-dateutil = "^2.8.2"
-tekore = "^4.1.0"
-python-dotenv = "^0.19.2"
+SQLAlchemy = "1.4.31"
+psycopg2-binary = "2.9.3"
+py-cord = "2.0.0b1"
+python-dateutil = "2.8.2"
+tekore = "4.2.0"
+python-dotenv = "0.19.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"

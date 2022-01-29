@@ -1,6 +1,6 @@
-git+https://github.com/Pycord-Development/pycord.git
-SQLAlchemy >= 1.4.26
-psycopg2-binary >= 2.9.1
-python-dateutil >= 2.8.2
-tekore >= 4.1.0
-python-dotenv >= 0.19.2
+py-cord == 2.0.0b1
+SQLAlchemy == 1.4.31
+psycopg2-binary == 2.9.3
+python-dateutil == 2.8.2
+tekore == 4.2.0
+python-dotenv == 0.19.2
