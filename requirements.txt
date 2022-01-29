@@ -4,3 +4,4 @@ psycopg2-binary == 2.9.3
 python-dateutil == 2.8.2
 tekore == 4.2.0
 python-dotenv == 0.19.2
+geopy[timezone] == 2.2.0

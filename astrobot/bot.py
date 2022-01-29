@@ -9,8 +9,7 @@ import collections
 import discord
 from discord.ext import commands
 from . import (
-    __version__ as astrobot_v,
-    __changelog__
+    __version__ as astrobot_v
 )
 from .types import MochjiMojis
 from .colors import MochjiColor
@@ -80,10 +79,10 @@ def start_client():
     @bot.command(brief="Return changelog for current bot version",
                  help="Return changelog for current bot version.")
     async def changelog(ctx):
-        """Return changelog for current bot version."""
+        """Return link to changelog for current bot version."""
         embed = discord.Embed(
             title=f"**astrobot v{astrobot_v} CHANGELOG**",
-            description=__changelog__,
+            description=f"[Click here](https://github.com/astro-devel/astrobot/blob/master/CHANGELOG.md#{astrobot_v}) to view this version's changelog.",
             color=MochjiColor.white()
         )
         await ctx.send(embed=embed)

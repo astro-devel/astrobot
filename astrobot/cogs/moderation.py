@@ -242,8 +242,9 @@ class Moderation(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
     async def ismuted(self, ctx, member: discord.Member):
-        # TODO: update to use string rep of member instead of Member obj
-        # TODO: re-implement database entries for mutes
+        if member.communication_disabled_until and member.communication_disabled_until < discord.utils.utcnow():
+            await member.edit(communication_disabled_until=None)
+
         embed = discord.Embed(title=f"Mute status for {member}:")
         embed.add_field(
             name="Status:",
@@ -251,14 +252,8 @@ class Moderation(commands.Cog):
         )
         if member.communication_disabled_until:
             embed.add_field(
-                name="Reason:",
-                value="NI"
-            ).add_field(
                 name="Expires in:",
                 value=util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
-            ).add_field(
-                name="Muted by:",
-                value="NI"
             )
         await ctx.send(embed=embed)
 
@@ -266,6 +261,9 @@ class Moderation(commands.Cog):
     @commands.has_permissions(moderate_members=True)
     @commands.check(invoker_is_lower_rank)
     async def mute(self, ctx, member: discord.Member, _time: str, *, reason=None):
+        if member.communication_disabled_until and member.communication_disabled_until < discord.utils.utcnow():
+            await member.edit(communication_disabled_until=None)
+
         if member.communication_disabled_until: # if user is already timed out, return
             time_left = util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
             await ctx.send(embed=discord.Embed(
@@ -326,22 +324,6 @@ class Moderation(commands.Cog):
         ))
         return
 
-    """ TODO: reimplement after database added back (see ismuted() TODO)
-    @commands.command()
-    @commands.has_permissions(ban_members=True, manage_roles=True)
-    async def get_mutes(self, ctx):
-        embed = discord.Embed(
-            title=f"**Active Mutes for {ctx.guild}**"
-        )
-        for name, time in mute_timers.items():
-            # TODO: convert to database pull (add timer info to database obj, mute() will need edit prob), need method of determining *time_left* AND *mute_length*, also need database pull to make command guild-specific
-            embed.add_field(
-                name=f"**{name}**",
-                value=f"{time._timeout}s", 
-                inline=True
-            )
-        await ctx.send(embed=embed)
-    """
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def blockword(self, ctx, word: str):

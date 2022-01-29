@@ -20,7 +20,7 @@ def init_cogs(bot: Bot) -> None:
         pass
 
     bot.add_cog(UserInfo(bot))
-    bot.add_cog(TimeStuffs(bot))
+    bot.add_cog(Time(bot))
     bot.add_cog(Reminders(bot))
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(Moderation(bot))
