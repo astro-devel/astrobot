@@ -92,7 +92,7 @@ def start_client():
         """Return link to changelog for current bot version."""
         embed = discord.Embed(
             title=f"**astrobot v{astrobot_v} CHANGELOG**",
-            description=f"[Click here](https://github.com/astro-devel/astrobot/blob/master/CHANGELOG.md#{astrobot_v}) to view this version's changelog.",
+            description=f"[Click here](https://github.com/astro-devel/astrobot/blob/master/CHANGELOG.md#{astrobot_v.replace('.', '')}) to view this version's changelog.",
             color=bot.colors.white
         )
         await ctx.send(embed=embed)
