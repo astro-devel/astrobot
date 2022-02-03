@@ -7,7 +7,7 @@ name: Docker build
 
 on:
   push:
-    branches: ['master']
+    branches: ['docker']
 
 env:
   REGISTRY: ghcr.io
