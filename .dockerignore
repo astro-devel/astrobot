@@ -11,6 +11,6 @@ README
 .venv
 .mypy_cache
 .gitignore
-/astrobot/archive
+/archive
 /Dockerfile
 /docker-compose.yml
