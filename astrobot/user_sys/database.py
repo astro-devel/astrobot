@@ -1,20 +1,31 @@
 import os
 import sqlalchemy
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, Sequence, String, Integer, JSON, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 
 db = sqlalchemy.create_engine(os.environ["DATABASE_URL"], future=True)
 _base = declarative_base()
 
-class UserMod__Obj(_base):
-    __tablename__ = 'user_moderation'
+class GuildUser__Obj(_base):
+    __tablename__ = 'guild_user_obj'
 
-    user_id = Column(String, primary_key=True)
-    guild_id = Column(String)
-    ban_count = Column(Integer)
-    kick_count = Column(Integer)
-    warn_count = Column(Integer)
-    mute_count = Column(Integer)
+    id = Column(Integer, Sequence('guild_user_obj_sequence'), primary_key=True)
+    user_id = Column(BigInteger)
+    guild_id = Column(BigInteger)
+    moderation_info = Column(JSON)
+
+    @classmethod
+    def blank_obj(cls, user_id, guild_id):
+        return cls(
+            user_id = user_id,
+            guild_id = guild_id,
+            moderation_info = {
+                "warn": 0,
+                "ban": 0,
+                "kick": 0,
+                "mute": 0
+            }
+        )
 
 class BugItem_DB(_base):
     __tablename__ = 'astro_bugs'

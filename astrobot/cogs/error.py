@@ -1,7 +1,6 @@
 import os
 import discord
 from discord.ext import commands
-from astrobot.colors import MochjiColor
 
 class ErrorHandler(commands.Cog):
     def __init__(self, bot) -> None:
@@ -17,12 +16,12 @@ class ErrorHandler(commands.Cog):
             return
         elif isinstance(error, commands.MissingPermissions) or isinstance(error, commands.CheckFailure):
             text = f"{self.bot.custom_emojis.error} You are not authorized to use this command!"
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
+            embed = discord.Embed(title=text, colour=self.bot.colors.red)
             await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
         elif isinstance(error, commands.BotMissingPermissions):
             text = f"{self.bot.custom_emojis.error} Sorry, I'm not allowed to do that here. :("
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
+            embed = discord.Embed(title=text, colour=self.bot.colors.red)
             await ctx.send(ctx.author.mention, embed=embed, delete_after=10)
             return
         text = f"{self.bot.custom_emojis.error} Uncaught error occured. Hopefully this will help:"
@@ -31,7 +30,7 @@ class ErrorHandler(commands.Cog):
         embed = discord.Embed(
             title=text,
             description=err,
-            colour=MochjiColor.red()
+            colour=self.bot.colors.red
         )
         if os.environ.get("DEVEL"):
             await ctx.send(ctx.author.mention, embed=embed)

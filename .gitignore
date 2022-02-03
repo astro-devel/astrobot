@@ -5,6 +5,7 @@ __pycache__
 .mypy_cache
 /logs
 /dist
-/astrobot/archive
+/archive
+/debug.py
 *local
 /docker-compose.yml

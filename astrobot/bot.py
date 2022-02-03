@@ -6,13 +6,13 @@ import os
 import time
 import asyncio
 import collections
+from types import SimpleNamespace
 import discord
 from discord.ext import commands
 from . import (
     __version__ as astrobot_v
 )
 from .types import MochjiMojis
-from .colors import MochjiColor
 from .cogs import init_cogs
 from .time import (
     database as timedb,
@@ -39,6 +39,16 @@ class Astrobot(commands.Bot):
         self.remindme_timers = collections.defaultdict(list)
         self.custom_emojis = None
         self.blocked_words = self.fetch_blocked_words()
+        self.colors = SimpleNamespace(**{
+            "black": 1579032,
+            "red": 13186640,
+            "orange": 14516534,
+            "yellow": 14534754,
+            "green": 7783784,
+            "blue": 3897790,
+            "purple": 8801474,
+            "white": 14277081,
+        })
     
     @staticmethod
     def fetch_blocked_words() -> list:
@@ -72,7 +82,7 @@ def start_client():
         embed = discord.Embed(
             title=text,
             description="**You can view this version's changes with the '!changelog' command**",
-            color=MochjiColor.white()
+            color=bot.colors.white
         )
         await ctx.send(embed=embed)
 
@@ -83,7 +93,7 @@ def start_client():
         embed = discord.Embed(
             title=f"**astrobot v{astrobot_v} CHANGELOG**",
             description=f"[Click here](https://github.com/astro-devel/astrobot/blob/master/CHANGELOG.md#{astrobot_v}) to view this version's changelog.",
-            color=MochjiColor.white()
+            color=bot.colors.white
         )
         await ctx.send(embed=embed)
     @bot.command(brief="Delete all DMs from astrobot",
@@ -102,7 +112,7 @@ def start_client():
             return
         embed = discord.Embed(
             title=f"{bot.custom_emojis.success} Successfully deleted all my messages to you.",
-            color=MochjiColor.green()
+            color=bot.colors.green
         ).set_footer(text="NOTE: this does not affect your server warn/kick counts.")
         await ctx.send(embed=embed)
 
@@ -116,7 +126,7 @@ def start_client():
             for timer in timedb.session.query(timedb.Reminders):
                 exp = int(timer.remind_at) - _now
                 if exp < 0:
-                    await Reminders.send_reminder(bot, timer.channel_id, timer.user_id, timer.reminder_text, -exp)
+                    await Reminders.send_reminder(bot, timer.channel_id, timer.user_id, timer.reminder_text, secs_late=-exp)
                     continue
                 reminder_timer = RemindersTimer(exp, Reminders.send_reminder, bot, timer.channel_id, timer.user_id, timer.reminder_text, reminder_text=timer.reminder_text)
                 bot.remindme_timers[int(timer.user_id)].append(reminder_timer)
@@ -134,7 +144,8 @@ def start_client():
         print(f"Reinitialized {await reinit_reminders()} reminders.")
         print(f'Logged in as: {bot.user}, Prefix= "{bot.command_prefix}", using py-cord version: {discord.__version__}')
 
-    bot.run(os.environ["BOT_TOKEN"])
+    bot_token = os.environ["BOT_TOKEN"]
+    bot.run(bot_token)
     """ 
     (keeping the de-abstracted bot init here for rn, may need it in the future, but for rn, bot.run is fine ig)
     try:

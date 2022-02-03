@@ -57,7 +57,7 @@ class Logging(commands.Cog):
         return (True, None)
     
     @commands.command()
-    async def get_logs(self, ctx, member: Optional[discord.Member]):
+    async def get_logs(self, ctx, member: Optional[discord.Member], page_limit=15):
         if not member:
             member = ctx.author
         if not os.path.exists(f"{self.LOG_DIR}/commands/{member.name}.log"):
@@ -82,6 +82,8 @@ class Logging(commands.Cog):
                 if x == max_len:
                     append_vals(pages, val.flush())
                     max_len += 15
+                    if len(pages) == page_limit:
+                        break
             if val: append_vals(pages, val)
 
         paginator = pagination.Paginator(pages=pages)

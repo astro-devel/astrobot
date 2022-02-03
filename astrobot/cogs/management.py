@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-from astrobot import colors
-from astrobot.colors import MochjiColor
 from astrobot import util
 
 class Management(commands.Cog):
@@ -16,7 +14,7 @@ class Management(commands.Cog):
                 bots.append(user)
         embed = discord.Embed(
             title=f"Server stats for {ctx.guild}",
-            color=colors.BLACK
+            color=self.bot.colors.black
         ).add_field(
             name="Members:",
             value=ctx.guild.member_count
@@ -75,7 +73,7 @@ class Management(commands.Cog):
             if seconds_remainder:
                 text += f" {seconds_remainder} second(s)"
 
-        embed = discord.Embed(title=text, colour=MochjiColor.green())
+        embed = discord.Embed(title=text, colour=self.bot.colors.green)
         await ctx.send(embed=embed)
 
     @commands.command(brief="Set slowmode in current channel", help="Set slowmode in current channel.", usage="[HOUR]h[MIN]m[SEC]s | off")
@@ -85,12 +83,12 @@ class Management(commands.Cog):
         if time == "off":
             if not ctx.channel.slowmode_delay:
                 text = f"{self.bot.custom_emojis.error} Channel currently not in slowmode!"
-                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                embed = discord.Embed(title=text, colour=self.bot.colors.red)
                 await ctx.send(embed=embed)
                 return
             await ctx.channel.edit(slowmode_delay=0)
             text = f"{self.bot.custom_emojis.success} Removed slowmode delay from this channel."
-            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            embed = discord.Embed(title=text, colour=self.bot.colors.green)
             await ctx.send(embed=embed)
             return
         else:
@@ -98,19 +96,19 @@ class Management(commands.Cog):
 
             if not seconds:
                 text = f"{self.bot.custom_emojis.error} Unknown argument: '{time}', see '!help slowmode'"
-                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                embed = discord.Embed(title=text, colour=self.bot.colors.red)
                 await ctx.send(embed=embed)
                 return
 
             if seconds > 21600:
                 text = f"{self.bot.custom_emojis.error} Time must not be greater than 6 hours."
-                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                embed = discord.Embed(title=text, colour=self.bot.colors.red)
                 await ctx.send(embed=embed)
                 return
 
             await ctx.channel.edit(slowmode_delay=seconds)
             text = f"{self.bot.custom_emojis.success} Set the slowmode delay in this channel to {times.get('h', times.get('H')) + ' hour(s)' if times.get('h', times.get('H')) else ''} {times.get('m', times.get('M')) + ' minute(s)' if times.get('m', times.get('M')) else ''} {times.get('s', times.get('S')) + ' second(s)' if times.get('s', times.get('S')) else ''}."
-            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            embed = discord.Embed(title=text, colour=self.bot.colors.green)
             await ctx.send(embed=embed)
             return
 
@@ -125,13 +123,13 @@ class Management(commands.Cog):
                 number = int(number)
             except ValueError:
                 text = f"{self.bot.custom_emojis.error} Please specify the number of messages to delete, i.e. '!delete 5'"
-                embed = discord.Embed(title=text, colour=MochjiColor.red())
+                embed = discord.Embed(title=text, colour=self.bot.colors.red)
                 await ctx.send(embed=embed)
                 return
 
         if number > 100:
             text = f"{self.bot.custom_emojis.error} Sorry, the max number of messages is 100"
-            embed = discord.Embed(title=text, colour=MochjiColor.red())
+            embed = discord.Embed(title=text, colour=self.bot.colors.red)
             await ctx.send(embed=embed)
         else:
             await ctx.channel.purge(limit=number+1)

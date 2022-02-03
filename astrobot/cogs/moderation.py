@@ -2,45 +2,44 @@ import time
 import datetime
 import string
 import discord
+import sqlalchemy as sql
 from discord.ext import commands
 from astrobot import (
     util
 )
 from astrobot.checks import invoker_is_lower_rank
-from astrobot import colors
-from astrobot.colors import MochjiColor
-from astrobot.user_sys.database import session as db_session
-from astrobot.user_sys.database import (
-    UserMod__Obj as _DB_UserMod__Obj
-)
+from astrobot.user_sys import database as db
 
 class Moderation(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: commands.Bot = bot
 
     def increment_db_count(self, member, guild_id, mod_type=None) -> None:
-        _query = db_session.query(_DB_UserMod__Obj)
-        _user = _DB_UserMod__Obj(
-            user_id = str(member.id),
-            guild_id = str(guild_id),
-            warn_count = 0,
-            ban_count = 0,
-            kick_count = 0,
-            mute_count = 0
-        )
+        _query = db.session.query(db.GuildUser__Obj)
+        modinfo = None
         for item in _query:
-            if str(item.user_id) == str(member.id):
-                _user = item
-                db_session.delete(item)
+            if str(item.user_id) == str(member.id) and str(item.guild_id) == str(guild_id):
+                modinfo = item.moderation_info
                 break
 
-        if mod_type == 'warn': _user.warn_count += 1
-        elif mod_type == 'ban': _user.ban_count += 1
-        elif mod_type == 'kick': _user.kick_count += 1
-        elif mod_type == 'mute': _user.mute_count += 1
+        if modinfo:
+            modinfo[mod_type] += 1
+            db.session.execute(
+                sql.update(db.GuildUser__Obj).
+                where((sql.and_(
+                    db.GuildUser__Obj.user_id == member.id,
+                    db.GuildUser__Obj.guild_id == guild_id
+                ))).
+                values(moderation_info = modinfo).
+                execution_options(synchronize_session="fetch")
+            )
+        else:
+            userobj = db.GuildUser__Obj.blank_obj(member.id, guild_id)
+            userobj.moderation_info[mod_type] += 1
+            db.session.add(userobj)
 
-        db_session.add(_user)
-        db_session.commit()
+        db.session.commit()
+        return
 
     @commands.command(brief="Warn a user", help="Warn a given user.", usage="@[user] [reason]")
     @commands.has_permissions(kick_members=True)
@@ -56,7 +55,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             title=f"{self.bot.custom_emojis.warning} Warning! {self.bot.custom_emojis.warning}",
             description=f"Server: {ctx.guild.name}\nWarned by: {invoker}\nReason: {reason}",
-            colour=MochjiColor.orange()
+            colour=self.bot.colors.orange
         )
         if bot_invoked:
             embed.set_footer(text="NOTE: This will not count against your official warnings tally.")
@@ -66,7 +65,7 @@ class Moderation(commands.Cog):
             embed = discord.Embed(
                 title=f"{self.bot.custom_emojis.warning} Warning! {self.bot.custom_emojis.warning}",
                 description=f"Warned by: {invoker}\nReason: {reason}",
-                colour=MochjiColor.orange()
+                colour=self.bot.colors.orange
             )
             await ctx.send(member.mention, embed=embed, delete_after=10)
             return
@@ -74,7 +73,7 @@ class Moderation(commands.Cog):
         # send success message in channel
         embed = discord.Embed(
             title=f"{self.bot.custom_emojis.success} Warned {member.name}\nReason: {reason}",
-            colour=MochjiColor.green()
+            colour=self.bot.colors.green
         )
         if not bot_invoked: # no need to send a warn_success if automod
             await ctx.send(embed=embed, delete_after=10)
@@ -91,7 +90,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             title = "Banned Users",
             description = list,
-            colour = MochjiColor.black()
+            colour = self.bot.colors.black
         )
         await ctx.send(embed=embed)
 
@@ -100,7 +99,7 @@ class Moderation(commands.Cog):
     async def modinfo(self, ctx, *, member: str):
         # TODO: implement just name search and if multiple, show list of options (with nick if applicable)
         if member[0:3] == "<@!":
-            await ctx.send(embed=discord.Embed(title=f"{self.bot.custom_emojis.error} **Please use User#Discriminator format instead of mention. i.e. '!modinfo DiscordUser#1234'**", colour=MochjiColor.red()), delete_after=10)
+            await ctx.send(embed=discord.Embed(title=f"{self.bot.custom_emojis.error} **Please use User#Discriminator format instead of mention. i.e. '!modinfo DiscordUser#1234'**", colour=self.bot.colors.red), delete_after=10)
             return
 
         _member_name, _member_discriminator = member.split("#")
@@ -110,39 +109,33 @@ class Moderation(commands.Cog):
                 _member_obj = _member
                 break
         if not _member_obj:
-            await ctx.send(embed=discord.Embed(title=f"{self.bot.custom_emojis.error} **Unable to find user {member}, are they in the server?**", colour=MochjiColor.red()), delete_after=10)
+            await ctx.send(embed=discord.Embed(title=f"{self.bot.custom_emojis.error} **Unable to find user {member}, are they in the server?**", colour=self.bot.colors.red), delete_after=10)
             return
         member = _member
 
         embed = discord.Embed(
             title=f"Moderation info for {member}"
         )
-        _query = db_session.query(_DB_UserMod__Obj)
-        _user = _DB_UserMod__Obj(
-            user_id = str(member.id),
-            guild_id = str(ctx.guild.id),
-            warn_count = 0,
-            ban_count = 0,
-            kick_count = 0,
-            mute_count = 0
-        )
+        _query = db.session.query(db.GuildUser__Obj)
+        _user = db.GuildUser__Obj.blank_obj(member.id, ctx.guild.id)
         for item in _query:
             if str(item.user_id) == str(member.id) and str(item.guild_id) == str(ctx.guild.id):
                 _user = item
                 break
 
+
         embed.add_field(
             name="**Warns**",
-            value=_user.warn_count
+            value=_user.moderation_info["warn"]
         ).add_field(
             name="**Bans**",
-            value=_user.ban_count
+            value=_user.moderation_info["ban"]
         ).add_field(
             name="**Kicks**",
-            value=_user.kick_count
+            value=_user.moderation_info["kick"]
         ).add_field(
             name="**Mutes**",
-            value=_user.mute_count
+            value=_user.moderation_info["mute"]
         ).set_thumbnail(
             url=member.avatar.__str__() if member.avatar else None
         )
@@ -165,7 +158,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             title=f"You have been banned from {ctx.guild.name}",
             description=f"Banned by: {ctx.author}\nBan Reason: {reason}",
-            colour=MochjiColor.red()
+            colour=self.bot.colors.red
         )
         if not member.bot:
             try:
@@ -176,7 +169,7 @@ class Moderation(commands.Cog):
         self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='ban')
 
         text = f"{self.bot.custom_emojis.success} **Successfully banned user {member.name}#{member.discriminator}**"
-        embed = discord.Embed(title=text, colour=MochjiColor.green())
+        embed = discord.Embed(title=text, colour=self.bot.colors.green)
         await ctx.send(embed=embed)
 
     @commands.command(brief="Kick a user", help="Kick a given user.", usage="@[user] [reason]")
@@ -195,7 +188,7 @@ class Moderation(commands.Cog):
         embed = discord.Embed(
             title=f"You have been kicked from {ctx.guild.name}",
             description=f"Kicked by: {ctx.author}\nKick Reason: {reason}",
-            colour=MochjiColor.red()
+            colour=self.bot.colors.red
         )
         if not member.bot:
             try:
@@ -206,7 +199,7 @@ class Moderation(commands.Cog):
         self.increment_db_count(member=member, guild_id=ctx.guild.id, mod_type='kick')
 
         text = f"{self.bot.custom_emojis.success} **Successfully kicked user {member.name}#{member.discriminator}**"
-        embed = discord.Embed(description=text, colour=MochjiColor.green())
+        embed = discord.Embed(description=text, colour=self.bot.colors.green)
         await ctx.send(embed=embed)
 
     def is_int_convertable(self, item):
@@ -225,7 +218,7 @@ class Moderation(commands.Cog):
             _unban = bans[member-1].user
             await ctx.guild.unban(_unban)
             text = f"{self.bot.custom_emojis.success} **Successfully unbanned user {_unban}**"
-            embed = discord.Embed(title=text, colour=MochjiColor.green())
+            embed = discord.Embed(title=text, colour=self.bot.colors.green)
             await ctx.send(embed=embed)
         else:
             banned_users = await ctx.guild.bans()
@@ -235,7 +228,7 @@ class Moderation(commands.Cog):
                 if (user.name, user.discriminator) == (member_name, member_discriminator):
                     await ctx.guild.unban(user)
                     text = f"{self.bot.custom_emojis.success} **Successfully unbanned user {user}**"
-                    embed = discord.Embed(title=text, colour=MochjiColor.green())
+                    embed = discord.Embed(title=text, colour=self.bot.colors.green)
                     await ctx.send(embed=embed)
     
     @commands.command()
@@ -252,8 +245,8 @@ class Moderation(commands.Cog):
         )
         if member.communication_disabled_until:
             embed.add_field(
-                name="Expires in:",
-                value=util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
+                name="Expires at:",
+                value=f"<t:{int(member.communication_disabled_until.timestamp())}:F>"
             )
         await ctx.send(embed=embed)
 
@@ -265,10 +258,9 @@ class Moderation(commands.Cog):
             await member.edit(communication_disabled_until=None)
 
         if member.communication_disabled_until: # if user is already timed out, return
-            time_left = util.time_between(discord.utils.utcnow(), member.communication_disabled_until)
             await ctx.send(embed=discord.Embed(
-                title=f"{self.bot.custom_emojis.error} **{member}** is already muted! Expires in {time_left}",
-                colour=MochjiColor.red()
+                title=f"{self.bot.custom_emojis.error} **{member}** is already muted! Expires <t:{int(member.communication_disabled_until.timestamp())}:R>",
+                colour=self.bot.colors.red
             ))
             return
 
@@ -285,14 +277,14 @@ class Moderation(commands.Cog):
             await member.send(embed=discord.Embed(
                 title=f'{self.bot.custom_emojis.warning} You have been muted in {ctx.guild.name} for {_time}.',
                 description=f'Reason: {reason}',
-                colour=MochjiColor.orange()
+                colour=self.bot.colors.orange
             ))
         except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
 
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.custom_emojis.success} **{member}** has successfully been muted.",
-            colour=MochjiColor.green()
+            colour=self.bot.colors.green
         ))
         
         return
@@ -304,7 +296,7 @@ class Moderation(commands.Cog):
         if not member.communication_disabled_until:
             embed = discord.Embed(
                 title=f"{self.bot.custom_emojis.error} **{member}** is not muted!",
-                colour=MochjiColor.red()
+                colour=self.bot.colors.red
             )
             await ctx.send(embed=embed)
             return
@@ -314,13 +306,13 @@ class Moderation(commands.Cog):
             await member.send(embed=discord.Embed(
                 title=f'You have been unmuted in {ctx.guild.name}',
                 description=f'Reason: {reason}',
-                colour=MochjiColor.green()
+                colour=self.bot.colors.green
             ))
         except discord.Forbidden: # if user only accepts DMs from friends, nothing to do
             pass
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.custom_emojis.success} **{member}** has successfully been unmuted.",
-            colour=MochjiColor.green()
+            colour=self.bot.colors.green
         ))
         return
 
@@ -331,7 +323,7 @@ class Moderation(commands.Cog):
         self.bot.sync_blocked_words()
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.custom_emojis.success} Added word '{word.lower()}' to blocked words list.",
-            color=colors.GREEN
+            color=self.bot.colors.green
         ))
     
     @commands.command()
@@ -340,14 +332,14 @@ class Moderation(commands.Cog):
         if word.lower() not in self.bot.blocked_words:
             await ctx.send(embed=discord.Embed(
                 title=f"{self.bot.custom_emojis.error} '{word.lower()}' is not currently a blocked word.",
-                color=colors.RED
+                color=self.bot.colors.red
             ))
             return
         self.bot.blocked_words.remove(word.lower())
         self.bot.sync_blocked_words()
         await ctx.send(embed=discord.Embed(
             title=f"{self.bot.custom_emojis.success} Removed word '{word.lower()}' from blocked words list.",
-            color=colors.GREEN
+            color=self.bot.colors.green
         ))
     
     @commands.command()

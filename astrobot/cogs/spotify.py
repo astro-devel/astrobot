@@ -4,7 +4,6 @@ import base64
 import discord
 from discord.ext import commands
 from astrobot.spotify import spotify as sp
-from astrobot.colors import MochjiColor
 
 class Spotify(commands.Cog):
     def __init__(self, bot) -> None:
@@ -99,7 +98,7 @@ Spotify Module (!sp) Commands:
         album_art = track.album.images[0].url
 
         embed = discord.Embed(
-            colour = MochjiColor.green()
+            colour = self.bot.colors.green
         ).add_field(
             name=f"{progress_bar}\n\
 \a\a\a\a\a\a\a\a\a\a\a\a\a\a\a{progress}/{duration}\a\a{'▶️' if playback_item.is_playing else '⏸'}",

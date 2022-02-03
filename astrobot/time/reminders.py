@@ -3,7 +3,6 @@ from typing import Optional
 import sqlalchemy
 import discord
 from discord.ext import commands, pages
-from astrobot.colors import MochjiColor
 from astrobot import util
 from . import database as db
 from .timers import RemindersTimer
@@ -13,14 +12,14 @@ class Reminders(commands.Cog):
         self.bot: discord.Bot = bot
     
     @staticmethod
-    async def send_reminder(bot: discord.Bot, channel_id: int, member_id: int, reminder: str, timer: RemindersTimer=None, secs_late: Optional[int]=None):
+    async def send_reminder(bot: discord.Bot, channel_id: int, member_id: int, reminder: str, timer: RemindersTimer=None, secs_late: int=None):
         channel = await bot.fetch_channel(channel_id)
         apology = str()
         if secs_late:
             apology += f"(late by {secs_late} seconds) Sorry about that :("
         embed = discord.Embed(
             title=reminder,
-            color=MochjiColor.white()
+            color=bot.colors.white
         )
         await channel.send(f"<@!{member_id}>, here's your reminder! {apology}", embed=embed)
         
