@@ -466,7 +466,7 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "scalene"
-version = "1.5.1"
+version = "1.5.2"
 description = "Scalene: A high-resolution, low-overhead CPU, GPU, and memory profiler for Python"
 category = "dev"
 optional = false
@@ -602,7 +602,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "266d1e6339f09e43cf7475fdc8bf8b474f3441e1954ef0c4f9986430f27c07a3"
+content-hash = "18f43e1438471e650f18515394e1aa4918a5a0c27f4842c3d7059dbb2adf2bd4"
 
 [metadata.files]
 aiohttp = [
@@ -803,6 +803,7 @@ greenlet = [
     {file = "greenlet-1.1.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:97e5306482182170ade15c4b0d8386ded995a07d7cc2ca8f27958d34d6736497"},
     {file = "greenlet-1.1.2-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:e6a36bb9474218c7a5b27ae476035497a6990e21d04c279884eb10d9b290f1b1"},
     {file = "greenlet-1.1.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:abb7a75ed8b968f3061327c433a0fbd17b729947b400747c334a9c29a9af6c58"},
+    {file = "greenlet-1.1.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:b336501a05e13b616ef81ce329c0e09ac5ed8c732d9ba7e3e983fcc1a9e86965"},
     {file = "greenlet-1.1.2-cp310-cp310-win_amd64.whl", hash = "sha256:14d4f3cd4e8b524ae9b8aa567858beed70c392fdec26dbdb0a8a418392e71708"},
     {file = "greenlet-1.1.2-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:17ff94e7a83aa8671a25bf5b59326ec26da379ace2ebc4411d690d80a7fbcf23"},
     {file = "greenlet-1.1.2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:9f3cba480d3deb69f6ee2c1825060177a22c7826431458c697df88e6aeb3caee"},
@@ -815,6 +816,7 @@ greenlet = [
     {file = "greenlet-1.1.2-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f9d29ca8a77117315101425ec7ec2a47a22ccf59f5593378fc4077ac5b754fce"},
     {file = "greenlet-1.1.2-cp36-cp36m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:21915eb821a6b3d9d8eefdaf57d6c345b970ad722f856cd71739493ce003ad08"},
     {file = "greenlet-1.1.2-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eff9d20417ff9dcb0d25e2defc2574d10b491bf2e693b4e491914738b7908168"},
+    {file = "greenlet-1.1.2-cp36-cp36m-musllinux_1_1_x86_64.whl", hash = "sha256:b8c008de9d0daba7b6666aa5bbfdc23dcd78cafc33997c9b7741ff6353bafb7f"},
     {file = "greenlet-1.1.2-cp36-cp36m-win32.whl", hash = "sha256:32ca72bbc673adbcfecb935bb3fb1b74e663d10a4b241aaa2f5a75fe1d1f90aa"},
     {file = "greenlet-1.1.2-cp36-cp36m-win_amd64.whl", hash = "sha256:f0214eb2a23b85528310dad848ad2ac58e735612929c8072f6093f3585fd342d"},
     {file = "greenlet-1.1.2-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:b92e29e58bef6d9cfd340c72b04d74c4b4e9f70c9fa7c78b674d1fec18896dc4"},
@@ -823,6 +825,7 @@ greenlet = [
     {file = "greenlet-1.1.2-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1e12bdc622676ce47ae9abbf455c189e442afdde8818d9da983085df6312e7a1"},
     {file = "greenlet-1.1.2-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:8c790abda465726cfb8bb08bd4ca9a5d0a7bd77c7ac1ca1b839ad823b948ea28"},
     {file = "greenlet-1.1.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f276df9830dba7a333544bd41070e8175762a7ac20350786b322b714b0e654f5"},
+    {file = "greenlet-1.1.2-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:8c5d5b35f789a030ebb95bff352f1d27a93d81069f2adb3182d99882e095cefe"},
     {file = "greenlet-1.1.2-cp37-cp37m-win32.whl", hash = "sha256:64e6175c2e53195278d7388c454e0b30997573f3f4bd63697f88d855f7a6a1fc"},
     {file = "greenlet-1.1.2-cp37-cp37m-win_amd64.whl", hash = "sha256:b11548073a2213d950c3f671aa88e6f83cda6e2fb97a8b6317b1b5b33d850e06"},
     {file = "greenlet-1.1.2-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:9633b3034d3d901f0a46b7939f8c4d64427dfba6bbc5a36b1a67364cf148a1b0"},
@@ -831,6 +834,7 @@ greenlet = [
     {file = "greenlet-1.1.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e859fcb4cbe93504ea18008d1df98dee4f7766db66c435e4882ab35cf70cac43"},
     {file = "greenlet-1.1.2-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:00e44c8afdbe5467e4f7b5851be223be68adb4272f44696ee71fe46b7036a711"},
     {file = "greenlet-1.1.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ec8c433b3ab0419100bd45b47c9c8551248a5aee30ca5e9d399a0b57ac04651b"},
+    {file = "greenlet-1.1.2-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:2bde6792f313f4e918caabc46532aa64aa27a0db05d75b20edfc5c6f46479de2"},
     {file = "greenlet-1.1.2-cp38-cp38-win32.whl", hash = "sha256:288c6a76705dc54fba69fbcb59904ae4ad768b4c768839b8ca5fdadec6dd8cfd"},
     {file = "greenlet-1.1.2-cp38-cp38-win_amd64.whl", hash = "sha256:8d2f1fb53a421b410751887eb4ff21386d119ef9cde3797bf5e7ed49fb51a3b3"},
     {file = "greenlet-1.1.2-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:166eac03e48784a6a6e0e5f041cfebb1ab400b394db188c48b3a84737f505b67"},
@@ -839,6 +843,7 @@ greenlet = [
     {file = "greenlet-1.1.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b1692f7d6bc45e3200844be0dba153612103db241691088626a33ff1f24a0d88"},
     {file = "greenlet-1.1.2-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:7227b47e73dedaa513cdebb98469705ef0d66eb5a1250144468e9c3097d6b59b"},
     {file = "greenlet-1.1.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7ff61ff178250f9bb3cd89752df0f1dd0e27316a8bd1465351652b1b4a4cdfd3"},
+    {file = "greenlet-1.1.2-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:0051c6f1f27cb756ffc0ffbac7d2cd48cb0362ac1736871399a739b2885134d3"},
     {file = "greenlet-1.1.2-cp39-cp39-win32.whl", hash = "sha256:f70a9e237bb792c7cc7e44c531fd48f5897961701cdaa06cf22fc14965c496cf"},
     {file = "greenlet-1.1.2-cp39-cp39-win_amd64.whl", hash = "sha256:013d61294b6cd8fe3242932c1c5e36e5d1db2c8afb58606c5a67efce62c1f5fd"},
     {file = "greenlet-1.1.2.tar.gz", hash = "sha256:e30f5ea4ae2346e62cedde8794a56858a67b878dd79f7df76a0767e356b1744a"},
@@ -1124,18 +1129,18 @@ rich = [
     {file = "rich-11.1.0.tar.gz", hash = "sha256:43e03d8eec12e21beaecc22c828a41c4247356414a12d5879834863d4ad53816"},
 ]
 scalene = [
-    {file = "scalene-1.5.1-cp310-cp310-macosx_10_15_universal2.whl", hash = "sha256:d57a1e4a4a8c094edb032a18f6234665f10a4bacc53dca259fb5a4a46c16d785"},
-    {file = "scalene-1.5.1-cp310-cp310-manylinux_2_24_x86_64.whl", hash = "sha256:4af6f7a885ce73e634ae5ecf2eba7424c15200c4f1b404357008ece40e1c9327"},
-    {file = "scalene-1.5.1-cp310-cp310-win_amd64.whl", hash = "sha256:6835673f86d59ec267fd625825fec55c4cfaa4bbf34c048e46c15b6331741cae"},
-    {file = "scalene-1.5.1-cp37-cp37m-macosx_10_14_universal2.whl", hash = "sha256:bde640fa6d14d04770ac6e4580cdf5e806f90ab0b90262791ca4aad59abd3d56"},
-    {file = "scalene-1.5.1-cp37-cp37m-manylinux_2_24_x86_64.whl", hash = "sha256:1442b629d05752a6c9a439bb9195417eb4c34ecc7b92b587f10a70816e68ff4f"},
-    {file = "scalene-1.5.1-cp38-cp38-macosx_10_14_universal2.whl", hash = "sha256:acf0113e6766e57a0423a470614b74eab6ece4be078f31492ffd5926c94a946d"},
-    {file = "scalene-1.5.1-cp38-cp38-manylinux_2_24_x86_64.whl", hash = "sha256:1986d259d1658c9a7fcd5522fb3e9718ee0c577a414dd72be46c53a81348b2ae"},
-    {file = "scalene-1.5.1-cp38-cp38-win_amd64.whl", hash = "sha256:f5b490b0b9306e4cde5899302d0e1c36dbb2e68f130e19a73e3f27f15e695d08"},
-    {file = "scalene-1.5.1-cp39-cp39-macosx_10_15_universal2.whl", hash = "sha256:07135fd500299d57cb77c7477284801752f7d5f5ebd0ad140bbd4254db01e874"},
-    {file = "scalene-1.5.1-cp39-cp39-manylinux_2_24_x86_64.whl", hash = "sha256:bcd5d7f22174d7665c4760dce0255053b895fa3b726773d5160a1aea9ebbdd69"},
-    {file = "scalene-1.5.1-cp39-cp39-win_amd64.whl", hash = "sha256:a3a63f5ed1f45d0ee00381c66f60c33b510ae5f1920c265a4b91247e553218c6"},
-    {file = "scalene-1.5.1.tar.gz", hash = "sha256:aa2772983907f057a824461d78d67b12a72f80a76645c8ace57c67c6715363df"},
+    {file = "scalene-1.5.2-cp310-cp310-macosx_10_15_universal2.whl", hash = "sha256:a1e933246772af4d94a3a76d38e203b0d3f3f8470c1203d13c1bb1086a40f6b6"},
+    {file = "scalene-1.5.2-cp310-cp310-manylinux_2_24_x86_64.whl", hash = "sha256:efca590372ec35374064993ee0a73c36744bc4a62851780c2a33c1db080563d7"},
+    {file = "scalene-1.5.2-cp310-cp310-win_amd64.whl", hash = "sha256:a4dd3eec9bef506efaaac93eee4cc1f3e56cee381e2e52dd72b9286c959c000b"},
+    {file = "scalene-1.5.2-cp37-cp37m-macosx_10_14_universal2.whl", hash = "sha256:d545e2fbd6e6850c6d83784c400e593bb11d4298009b90de2e640d06bd235314"},
+    {file = "scalene-1.5.2-cp37-cp37m-manylinux_2_24_x86_64.whl", hash = "sha256:96b0a6cb7a528361be321d3f36d5eda2d13fcbb89fab7d03d51c5b14434670a9"},
+    {file = "scalene-1.5.2-cp38-cp38-macosx_10_14_universal2.whl", hash = "sha256:d804fc284422a955667eb47100155cf7532c736ebd0f9666f0e56d9b9fdc9548"},
+    {file = "scalene-1.5.2-cp38-cp38-manylinux_2_24_x86_64.whl", hash = "sha256:5c243903e6d5b3aba585fe455be99a986b282ca37e0a71a031348fdd69f6989d"},
+    {file = "scalene-1.5.2-cp38-cp38-win_amd64.whl", hash = "sha256:7079212dfd0baf2036d578db34380eba8522de2d08cfabe02131e4c2e30463c6"},
+    {file = "scalene-1.5.2-cp39-cp39-macosx_10_15_universal2.whl", hash = "sha256:e1e37a8af49c955d304ae7bae96ecd8de46d1938562b78f30a037fd3db1da909"},
+    {file = "scalene-1.5.2-cp39-cp39-manylinux_2_24_x86_64.whl", hash = "sha256:76f823b314b7239d91a8d21ec7df448bc4bd6fef4cb957beaa612bbe2ade698c"},
+    {file = "scalene-1.5.2-cp39-cp39-win_amd64.whl", hash = "sha256:96b8cc6cc5a2e996b16b2e6427cec25324123b01c9dd8f721dd600bceb395e9b"},
+    {file = "scalene-1.5.2.tar.gz", hash = "sha256:1c01b3367cad8a61837239d2bdfc247284ee5820d888a845322449aa5dde1884"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
