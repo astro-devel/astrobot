@@ -1,5 +1,8 @@
 name: discord
-on: [push]
+on:
+  push:
+    branches: ['master']
+  
 jobs:
 
   build:
@@ -12,4 +15,4 @@ jobs:
       with:
         webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
         webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-        message: "New push on astrobot.\n\t${{ github.event.head_commit.message }}"
+        message: "New push on astrobot master:\n\n\t```${{ github.event.head_commit.message }}```"

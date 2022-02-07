@@ -50,7 +50,7 @@ class Reminders(commands.Cog):
         db.session.commit()
 
         await ctx.send(embed=discord.Embed(
-            title=f"{self.bot.custom_emojis.success} Got it! Will remind you about: ***'{reminder}'*** on <t:{timer.expires_at}>"
+            title=f"{self.bot.custom_emojis.success} Got it! Will remind you about: ***'{reminder}'*** on <t:{timer.expires_at}:D> at <t:{timer.expires_at}:T>"
         ))
         return
     
@@ -72,7 +72,7 @@ class Reminders(commands.Cog):
                     value=timer.reminder_text
                 ).add_field(
                     name="Date",
-                    value=f"<t:{timer.expires_at}>"
+                    value=f"<t:{timer.expires_at}:D> at <t:{timer.expires_at}:T>"
                 ))
             paginator = pages.Paginator(pages=page_list)
             await paginator.send(ctx)

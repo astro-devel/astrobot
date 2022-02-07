@@ -29,7 +29,7 @@ class Astrobot(commands.Bot):
         super().__init__(
             '.' if os.environ.get("DEVEL") else '!', # '!' if production, '.' if development
             AstrobotHelpCommand(), # astrobot custom help command
-            intents=discord.Intents.all(), # init all intents
+            intents=discord.Intents(messages=True, guilds=True), # set gateway intents
             activity=discord.Game( # set activity text
                 name=f"v{astrobot_v} | run !help for help"
             ),

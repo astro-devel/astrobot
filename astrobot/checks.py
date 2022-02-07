@@ -8,7 +8,7 @@ def is_victor(ctx):
 
 def invoker_is_lower_rank(ctx):
     """check if invoker is above victim in role hierarchy"""
-    if ctx.author.bot or ctx.message.content[1:] == 'help' or ctx.author == ctx.guild.owner:
+    if ctx.author.bot or ctx.message.content[1:5] == 'help' or ctx.author == ctx.guild.owner:
         # check doesn't need to be run if:
             # - command is bot invoked (i.e. automod)
             # - command is being run by HelpCommand (TODO: check on why this is)
