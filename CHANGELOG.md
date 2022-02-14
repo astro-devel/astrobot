@@ -1,7 +1,9 @@
 # 22.2.3
 - [ FEATURE_MODIFICATION ] remove !slowmode_status command
     - current feature of !slowmode_status to be moved to !slowmode (as !slowmode)
-        - slowmode(time) is now optional kwarg (slowmode(time=None)) to fulfill this
+        - slowmode(time) is now optional to fulfill this
+        - add *reason kwarg to slowmode command, for setting audit log reason (X-Audit-Log-Reason)
+            - hopefully later to be impl in !slowmodes
     - [ ADD_CMD ] !slowmodes
         - display paginated list of all active slowmodes in current guild
 - [ DEP_ADD ] arrow >= 1.2.2
