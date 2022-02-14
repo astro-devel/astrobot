@@ -1,5 +1,4 @@
 import time
-from typing import Optional
 import sqlalchemy
 import discord
 from discord.ext import commands, pages
