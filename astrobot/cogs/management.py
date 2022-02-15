@@ -47,6 +47,7 @@ class Management(commands.Cog):
     @commands.command()
     async def serverinfo(self, ctx):
         bots=list()
+        server_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
         for user in ctx.guild.members:
             if user.bot:
                 bots.append(user)
@@ -61,7 +62,7 @@ class Management(commands.Cog):
             value=len(bots)
         ).add_field(
             name="Server Owner:",
-            value=ctx.guild.owner.mention
+            value=server_owner.mention
         ).add_field(
             name="Server Boosters:",
             value=len(ctx.guild.premium_subscribers)

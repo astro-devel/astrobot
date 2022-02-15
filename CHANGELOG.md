@@ -1,3 +1,8 @@
+# 22.2.3.patch1
+- [ BUG_FIX ] Guild.owner.id in !serverinfo used gateway cache function 'get_member()', which returned none
+    - fixed by changing to fetch_member(), which uses REST API call
+    - issue may be in other commands, will be on lookout
+
 # 22.2.3
 - [ FEATURE_MODIFICATION ] remove !slowmode_status command
     - current feature of !slowmode_status to be moved to !slowmode (as !slowmode)
