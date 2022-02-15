@@ -1,3 +1,3 @@
 """all-encompassing god-level bot for mochjicord"""
 
-__version__ = '22.2.3.patch2'
+__version__ = "22.2.3.patch2"

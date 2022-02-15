@@ -10,6 +10,7 @@ from .logger import Logging
 from .spotify import Spotify
 from .halys import Halys
 
+
 def init_cogs(bot: Bot) -> None:
 
     if os.environ.get("DEVEL"):

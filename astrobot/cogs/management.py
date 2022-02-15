@@ -3,12 +3,13 @@ import discord
 from discord.ext import commands, pages
 from astrobot import util
 
+
 class Management(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot: discord.Bot = bot
-    
+
     def slowmode_status(self, channel: discord.TextChannel) -> Optional[str]:
-        '''Get slowmode delay for a given channel'''
+        """Get slowmode delay for a given channel"""
         slowmode: int = channel.slowmode_delay
         if slowmode == 0:
             text = None
@@ -16,7 +17,7 @@ class Management(commands.Cog):
         elif slowmode < 60:
             text = f"{slowmode} seconds"
 
-        elif 3600 > slowmode >= 60: # if slowmode is minutes
+        elif 3600 > slowmode >= 60:  # if slowmode is minutes
             if slowmode % 60 == 0:
                 slowmode = int(slowmode / 60)
                 text = f"{slowmode} minute(s)"
@@ -26,11 +27,11 @@ class Management(commands.Cog):
                 slowmode = int(slowmode / 60)
                 text = f"{slowmode} minute(s) {remainder} second(s)"
 
-        elif slowmode >= 3600: # if slowmode is hours
+        elif slowmode >= 3600:  # if slowmode is hours
             seconds_remainder = slowmode % 60
-            if seconds_remainder: # if remainder of seconds, remove from slowmode
+            if seconds_remainder:  # if remainder of seconds, remove from slowmode
                 slowmode -= seconds_remainder
-            slowmode = int(slowmode / 60) # divide to minutes
+            slowmode = int(slowmode / 60)  # divide to minutes
             minutes_remainder = slowmode % 60
             if minutes_remainder:
                 slowmode -= minutes_remainder
@@ -46,31 +47,24 @@ class Management(commands.Cog):
 
     @commands.command()
     async def serverinfo(self, ctx):
-        bots=0
+        bots = 0
         for user in ctx.guild.members:
             if user.bot:
                 bots += 1
-        embed = discord.Embed(
-            title=f"Server stats for {ctx.guild}",
-            color=self.bot.colors.black
-        ).add_field(
-            name="Members:",
-            value=ctx.guild.member_count
-        ).add_field(
-            name="Bots:",
-            value=bots
-        ).add_field(
-            name="Server Owner:",
-            value=ctx.guild.owner.mention
-        ).add_field(
-            name="Server Boosters:",
-            value=len(ctx.guild.premium_subscribers)
-        ).add_field(
-            name="Server Boosts:",
-            value=ctx.guild.premium_subscription_count
-        ).add_field(
-            name="Server Created:",
-            value=ctx.guild.created_at.date()
+        embed = (
+            discord.Embed(
+                title=f"Server stats for {ctx.guild}", color=self.bot.colors.black
+            )
+            .add_field(name="Members:", value=ctx.guild.member_count)
+            .add_field(name="Bots:", value=bots)
+            .add_field(name="Server Owner:", value=ctx.guild.owner.mention)
+            .add_field(
+                name="Server Boosters:", value=len(ctx.guild.premium_subscribers)
+            )
+            .add_field(
+                name="Server Boosts:", value=ctx.guild.premium_subscription_count
+            )
+            .add_field(name="Server Created:", value=ctx.guild.created_at.date())
         )
         embed.set_thumbnail(url=ctx.guild.icon.url)
         await ctx.send(embed=embed)
@@ -84,37 +78,43 @@ class Management(commands.Cog):
             if not isinstance(channel, discord.TextChannel):
                 continue
             if channel.slowmode_delay:
-                page_list.append(discord.Embed(
-                    title=f"Active slowmodes for {ctx.guild}"
-                ).add_field(
-                    name="Channel",
-                    value=channel.mention
-                ).add_field(
-                    name="Delay Length",
-                    value=self.slowmode_status(channel)
-                ))
+                page_list.append(
+                    discord.Embed(title=f"Active slowmodes for {ctx.guild}")
+                    .add_field(name="Channel", value=channel.mention)
+                    .add_field(name="Delay Length", value=self.slowmode_status(channel))
+                )
         if page_list:
             await pages.Paginator(pages=page_list).send(ctx)
         else:
-            await ctx.send(embed=discord.Embed(
-                title=f"{self.bot.custom_emojis.error} No active slowmodes found in {ctx.guild.name}.",
-                color=self.bot.colors.red
-            ))
+            await ctx.send(
+                embed=discord.Embed(
+                    title=f"{self.bot.custom_emojis.error} No active slowmodes found in {ctx.guild.name}.",
+                    color=self.bot.colors.red,
+                )
+            )
         return
 
-    @commands.command(brief="Set slowmode in current channel", help="Set slowmode in current channel.", usage="[HOUR]h[MIN]m[SEC]s | off")
+    @commands.command(
+        brief="Set slowmode in current channel",
+        help="Set slowmode in current channel.",
+        usage="[HOUR]h[MIN]m[SEC]s | off",
+    )
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx, time: Optional[str], *, reason=None):
 
         if not time:
-            await ctx.send(embed=discord.Embed(
-                title=f"Current slowmode: {self.slowmode_status(ctx.channel)}"
-            ))
+            await ctx.send(
+                embed=discord.Embed(
+                    title=f"Current slowmode: {self.slowmode_status(ctx.channel)}"
+                )
+            )
             return
 
         if time == "off":
             if not ctx.channel.slowmode_delay:
-                text = f"{self.bot.custom_emojis.error} Channel currently not in slowmode!"
+                text = (
+                    f"{self.bot.custom_emojis.error} Channel currently not in slowmode!"
+                )
                 embed = discord.Embed(title=text, colour=self.bot.colors.red)
                 await ctx.send(embed=embed)
                 return
@@ -144,7 +144,12 @@ class Management(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-    @commands.command(brief="Delete a given number of messages", help="Delete a given number of messages.", usage="[AMOUNT]", aliases=["del"])
+    @commands.command(
+        brief="Delete a given number of messages",
+        help="Delete a given number of messages.",
+        usage="[AMOUNT]",
+        aliases=["del"],
+    )
     @commands.has_permissions(manage_messages=True)
     async def delete(self, ctx, number: str):
         # TODO: check in on possibility of removing specific user's messages
@@ -164,4 +169,4 @@ class Management(commands.Cog):
             embed = discord.Embed(title=text, colour=self.bot.colors.red)
             await ctx.send(embed=embed)
         else:
-            await ctx.channel.purge(limit=number+1)
+            await ctx.channel.purge(limit=number + 1)

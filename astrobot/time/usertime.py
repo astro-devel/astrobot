@@ -6,6 +6,7 @@ from discord.ext import commands
 from geopy.geocoders import GeoNames
 from geopy.timezone import Timezone
 
+
 class Time(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -25,7 +26,7 @@ class Time(commands.Cog):
         t = datetime.now(tz=q.pytz_timezone)
         embed = discord.Embed(
             title=f"Current Time for '{query}' is: {t.strftime('%H:%M')}.",
-            color=self.bot.colors.green
+            color=self.bot.colors.green,
         )
         await ctx.send(embed=embed)
         return

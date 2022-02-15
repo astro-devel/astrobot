@@ -1,3 +1,3 @@
 from .spotify import Spotify
 
-__all__ = ['Spotify']
+__all__ = ["Spotify"]
