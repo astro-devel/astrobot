@@ -46,11 +46,10 @@ class Management(commands.Cog):
 
     @commands.command()
     async def serverinfo(self, ctx):
-        bots=list()
-        server_owner = await ctx.guild.fetch_member(ctx.guild.owner_id)
+        bots=0
         for user in ctx.guild.members:
             if user.bot:
-                bots.append(user)
+                bots += 1
         embed = discord.Embed(
             title=f"Server stats for {ctx.guild}",
             color=self.bot.colors.black
@@ -59,10 +58,10 @@ class Management(commands.Cog):
             value=ctx.guild.member_count
         ).add_field(
             name="Bots:",
-            value=len(bots)
+            value=bots
         ).add_field(
             name="Server Owner:",
-            value=server_owner.mention
+            value=ctx.guild.owner.mention
         ).add_field(
             name="Server Boosters:",
             value=len(ctx.guild.premium_subscribers)

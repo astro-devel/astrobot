@@ -1,3 +1,8 @@
+# 22.2.3.patch2
+- [ BOT_MODIFICATION ] add GUILD_MEMBERS intent, in order to re-enable member caching
+- [ BOT_MODIFICATION ] disable message caching
+- [ ETC ] revert changes from patch 1
+
 # 22.2.3.patch1
 - [ BUG_FIX ] Guild.owner.id in !serverinfo used gateway cache function 'get_member()', which returned none
     - fixed by changing to fetch_member(), which uses REST API call

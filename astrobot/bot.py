@@ -25,15 +25,16 @@ class AstrobotHelpCommand(commands.DefaultHelpCommand):
         super().__init__(**options)
 
 class Astrobot(commands.Bot):
-    def __init__(self, **options):
+    def __init__(self):
         super().__init__(
-            '.' if os.environ.get("DEVEL") else '!', # '!' if production, '.' if development
-            AstrobotHelpCommand(), # astrobot custom help command
-            intents=discord.Intents(messages=True, guilds=True), # set gateway intents
+            command_prefix='.' if os.environ.get("DEVEL") else '!', # '!' if production, '.' if development
+            help_command=AstrobotHelpCommand(), # astrobot custom help command
+            intents=discord.Intents(messages=True, guilds=True, members=True), # set gateway intents
             activity=discord.Game( # set activity text
                 name=f"v{astrobot_v} | run !help for help"
             ),
-            **options)
+            max_messages=None # disable message cache to save memory
+        )
         
         # custom astrobot attrs 
         self.remindme_timers = collections.defaultdict(list)
