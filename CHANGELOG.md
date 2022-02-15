@@ -1,3 +1,6 @@
+# 22.2.4
+- [ DEV_DEP_ADD ] black >= 22.1.0
+
 # 22.2.3.patch2
 - [ BOT_MODIFICATION ] add GUILD_MEMBERS intent, in order to re-enable member caching
 - [ BOT_MODIFICATION ] disable message caching

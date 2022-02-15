@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "astrobot"
-version = "22.2.3.patch2"
+version = "22.2.4"
 description = "the all-encompassing god-level bot for mochjicord"
 authors = ["kevinshome <noah.tanner7@gmail.com>"]
 
@@ -21,6 +21,7 @@ mypy = "^0.931"
 scalene = "^1.4.2"
 radon = "^5.1.0"
 sqlalchemy-stubs = "^0.4"
+black = "^22.1.0"
 
 [build-system]
 requires = ["poetry>=1.1.11"]
