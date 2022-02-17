@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy import Column, Sequence, String, Integer, JSON, BigInteger
 from sqlalchemy.ext.declarative import declarative_base
 
-db = sqlalchemy.create_engine(os.environ["DATABASE_URL"], future=True)
+db = sqlalchemy.create_engine(os.environ["DATABASE_URL"], future=True, pool_pre_ping=True)
 _base = declarative_base()
 
 
