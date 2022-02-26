@@ -14,7 +14,7 @@ class SpotifyUserToken__Obj(_base):
     access_token = Column(String)
     refresh_token = Column(String)
     expires_at = Column(String)
-
+    default_device_id = Column(String, nullable=True)
 
 Session = sqlalchemy.orm.sessionmaker(db, future=True)
 session: sqlalchemy.orm.Session = Session()

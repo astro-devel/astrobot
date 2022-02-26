@@ -1,5 +1,9 @@
 # 22.2.4
 - [ DEV_DEP_ADD ] black >= 22.1.0
+- [ FEATURE_MODIFICATION ] added ability to add default spotify playback device
+    - i.e. "!sp set device default BedroomAmp"
+- [ FEATURE_MODIFICATION ] added support for podcasts and local tracks to !sp nowplaying
+- [ FEATURE_MODIFICATION ] !sp nowplaying embed now displays album art dominant color
 
 # 22.2.3.patch2
 - [ BOT_MODIFICATION ] add GUILD_MEMBERS intent, in order to re-enable member caching
@@ -20,22 +24,10 @@
     - [ ADD_CMD ] !slowmodes
         - display paginated list of all active slowmodes in current guild
 - [ DEP_ADD ] arrow >= 1.2.2
-- [ LOCKFILE_DEP_UPDATE ] updated the following lockfile dependencies:
-    - *pycord -> 2.0.0b4
-    - tomli -> 2.0.1
-    - typing-extensions -> 4.1.0
-    - platformdirs -> 2.5.0
-    - rich -> 11.2.0
-    - *scalene -> 1.5.4
 
 # 22.2.2
 - [ FEATURE_MODIFICATION ] update !remindme command response
 - [ BOT_MODIFICATION ] update gateway intents only to specific intents needed, instead of all intents (saves log space)
-- [ LOCKFILE_DEP_UPDATE ] updated the following lockfile dependencies:
-    - *pycord -> 2.0.0b3
-    - *scalene -> 1.5.3
-    - numpy -> 1.22.2
-    - httpcore -> 0.14.7
 
 # 22.2.1
 - [ FEATURE_MODIFICATION] add 'page_limit' parameter to !get_logs command (default: 15)  

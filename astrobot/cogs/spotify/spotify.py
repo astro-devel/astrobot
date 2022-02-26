@@ -1,12 +1,14 @@
 from typing import Optional
 from datetime import timedelta
 import base64
+from tekore import NotFound, model
 import discord
 from discord.ext import commands
 from astrobot.spotify import spotify as sp
-
+from astrobot.spotify.utils import get_dominant_color
 
 class Spotify(commands.Cog):
+    # TODO: create decorator(s)
     def __init__(self, bot) -> None:
         self.bot: discord.Bot = bot
         self._commands = {
@@ -17,6 +19,7 @@ class Spotify(commands.Cog):
             "_playback_mgr": self._playback_mgr,
             "_getter": self._getter,
             "_nowplaying": self._nowplaying,
+            "_setter": self._setter
         }
         self.cached_sessions = dict()
 
@@ -41,6 +44,7 @@ Spotify Module (!sp) Commands:
 -\tnext: play next track
 -\tprevious: play previous track
 -\tget [devices]: get a list of [devices]
+-\tset device default [device_name]: set a default device for spotify to use for playback
 ```"""
 
     async def _grab_user_and_cache(self, user_id) -> Optional[sp.SpotifyUserObject]:
@@ -62,14 +66,37 @@ Spotify Module (!sp) Commands:
             devstring = str()
             count = 1
             for dev in user.session.playback_devices():
-                devstring += f"{count}. **{dev.name}** - *{dev.type}*, **Status:** {'***ACTIVE***' if dev.is_active else '*INACTIVE*'}, Volume: **{dev.volume_percent}%**\n"
+                devstring += f"{'*' if dev.id == user.default_device_id else ''}{count}. **{dev.name}** - *{dev.type}*, **Status:** {'***ACTIVE***' if dev.is_active else '*INACTIVE*'}, Volume: **{dev.volume_percent}%**\n"
                 count += 1
             embed = discord.Embed(title="Visible Devices:", description=devstring)
             await ctx.send(embed=embed)
             return
         elif option == "playlists":
             return "FNI"
-        return
+        else:
+            return await self._error(ctx, "not_found", "get " + option)
+    
+    async def _setter(self, ctx, *args):
+        user: Optional[sp.SpotifyUserObject] = self.cached_sessions.get(
+            ctx.author.id.__str__(),
+            await self._grab_user_and_cache(ctx.author.id.__str__()),
+        )
+        if not user:
+            return "User could not be found... If you haven't connected your spotify account yet, do that by running '!sp connect'."
+        option = args[0]
+        if option == "device":
+            if args[1] == "default":
+                for dev in user.session.playback_devices():
+                    if ' '.join(args[2:]) == dev.name:
+                        user.default_device_id = dev.id
+                        user.update_db()
+                        return f"Successfully set default device to: {dev.name}"
+                return # fail
+            else:
+                return
+        else:
+            print(args)
+            return await self._error(ctx, "not_found", "set " + ' '.join(args))
 
     async def _nowplaying(self, ctx, *args):
         user: Optional[sp.SpotifyUserObject] = self.cached_sessions.get(
@@ -93,7 +120,7 @@ Spotify Module (!sp) Commands:
         playback_item = user.session.playback()
         track = playback_item.item
         if not playback_item.item:
-            return "No track currently playing..."
+            return "Nothing is currently playing..."
         progress = ":".join(
             timedelta(milliseconds=playback_item.progress_ms)
             .__str__()
@@ -106,21 +133,32 @@ Spotify Module (!sp) Commands:
             .split(".")[0]
             .split(":")[1:]
         )
-        artists = ", ".join([artist.name for artist in track.artists]).strip(", ")
-        progress_bar = get_progress_bar(playback_item.progress_ms, track.duration_ms)
-        track_url = f"https://open.spotify.com/track/{track.id}"
-        album_art = track.album.images[0].url
+        is_local_track = isinstance(track, model.LocalTrack)
+        if track.type == "track":
+            artists = ", ".join([artist.name for artist in track.artists]).strip(", ")
+            album_art = track.album.images[0].url if not is_local_track else None
+            show_artist_url = f"https://open.spotify.com/artist/{track.artists[0].id}"
+            album_name = track.album.name
+        elif track.type == "episode":
+            artists = track.show.name
+            album_art = track.images[0].url
+            show_artist_url = f"https://open.spotify.com/show/{track.show.id}"
+            album_name = None
 
-        embed = discord.Embed(colour=self.bot.colors.green).add_field(
+        progress_bar = get_progress_bar(playback_item.progress_ms, track.duration_ms)
+        track_url = f"https://open.spotify.com/{track.type}/{track.id}"
+
+        embed = discord.Embed(colour=get_dominant_color(album_art)).add_field(
             name=f"{progress_bar}\n\
 \a\a\a\a\a\a\a\a\a\a\a\a\a\a\a{progress}/{duration}\a\a{'▶️' if playback_item.is_playing else '⏸'}",
-            value=f"[{track.name}]({track_url})\n**{artists}** | *{track.album.name}*",
+            value=f"[{track.name}]({track_url})\n[**{artists}**]({show_artist_url})" + (f" | *{album_name}*" if album_name else "") if not is_local_track else f"{track.name}\n**{artists}**",
         )
         embed.set_author(
             name=f"{'Now Playing'} - {ctx.author.nick if ctx.author.nick else ctx.author.name}",
             icon_url=ctx.author.avatar,
         )
-        embed.set_thumbnail(url=album_art)
+        if album_art:
+            embed.set_thumbnail(url=album_art)
         await ctx.send(embed=embed)
 
         return
@@ -155,7 +193,10 @@ Spotify Module (!sp) Commands:
             return "User could not be found... If you haven't connected your spotify account yet, do that by running '!sp connect'."
         if playtype == "track":
             track = user.session.search(args[0])[0].items[0]
-            user.session.playback_start_tracks([track.id])
+            try:
+                user.session.playback_start_tracks([track.id])
+            except NotFound:
+                user.session.playback_start_tracks([track.id], device_id=user.default_device_id)
             track_name = track.name.replace("*", "\*")
             return f"Playing **{track_name}** by **{track.artists[0].name}**..."
         else:
@@ -222,6 +263,8 @@ Spotify Module (!sp) Commands:
             cmd = (self._commands["_playback_mgr"], [args[0]])
         elif args[0] == "get":
             cmd = (self._commands["_getter"], [" ".join(args[1:])])
+        elif args[0] == "set":
+            cmd = (self._commands["_setter"], args[1:])
         else:
             cmd = (self._commands["_error"], ("not_found", " ".join(args)))
         return cmd

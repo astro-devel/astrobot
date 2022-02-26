@@ -25,6 +25,7 @@ class SpotifyUserObject:
             self.CLIENT_SECRET,
             self.REDIRECT_URI,
         ) = spot.config_from_environment()
+        self.default_device_id = None
         self.discord_user_id = discord_user_id
         self.cred = spot.RefreshingCredentials(
             self.CLIENT_ID, self.CLIENT_SECRET, self.REDIRECT_URI
@@ -88,6 +89,7 @@ class SpotifyUserObject:
                 access_token=self.user_token.access_token,
                 refresh_token=self.user_token.refresh_token,
                 expires_at=self.user_token._token.expires_at,
+                default_device_id=self.default_device_id
             )
         )
         db.session.commit()
@@ -103,6 +105,7 @@ class SpotifyUserObject:
                 access_token=self.user_token.access_token,
                 refresh_token=self.user_token.refresh_token,
                 expires_at=self.user_token._token.expires_at,
+                default_device_id=self.default_device_id
             )
         )
         db.session.commit()
@@ -132,6 +135,7 @@ class SpotifyUserObject:
         self.user_token = spot.RefreshingToken(_tok, self.cred._client)
         self.session.token = self.user_token
         self.session_type = "user"
+        self.default_device_id = _db_tok.default_device_id
         return True
 
 

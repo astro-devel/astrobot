@@ -14,6 +14,7 @@ tekore = "^4.2.0"
 python-dotenv = "^0.19.2"
 geopy = {version="^2.2.0", extras=['timezone']}
 arrow = "^1.2.2"
+colorthief = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
