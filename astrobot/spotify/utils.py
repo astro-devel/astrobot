@@ -1,6 +1,14 @@
 import urllib.request
 from colorthief import ColorThief
 
+def format_time(time: str) -> list:
+    time = time.split('.')[0].split(':')
+    if time[0] == '0':
+        return ':'.join(time[1:])
+    else:
+        time[0] = '0' + time[0] # add leading 0 to hour value
+        return ':'.join(time)
+    return
 
 def get_dominant_color(url_path: str) -> int:
     """Get the dominant color of an image at a URL, and return the integer value of that color."""

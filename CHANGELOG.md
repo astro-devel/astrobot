@@ -1,3 +1,6 @@
+# 22.2.4.patch1
+- [ BUG_FIX ] fix time for '!sp nowplaying' when length is over 1 hour
+
 # 22.2.4
 - [ DEV_DEP_ADD ] black >= 22.1.0
 - [ FEATURE_MODIFICATION ] added ability to add default spotify playback device

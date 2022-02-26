@@ -5,7 +5,7 @@ from tekore import NotFound, model
 import discord
 from discord.ext import commands
 from astrobot.spotify import spotify as sp
-from astrobot.spotify.utils import get_dominant_color
+from astrobot.spotify.utils import get_dominant_color, format_time
 
 
 class Spotify(commands.Cog):
@@ -122,18 +122,8 @@ Spotify Module (!sp) Commands:
         track = playback_item.item
         if not playback_item.item:
             return "Nothing is currently playing..."
-        progress = ":".join(
-            timedelta(milliseconds=playback_item.progress_ms)
-            .__str__()
-            .split(".")[0]
-            .split(":")[1:]
-        )
-        duration = ":".join(
-            timedelta(milliseconds=track.duration_ms)
-            .__str__()
-            .split(".")[0]
-            .split(":")[1:]
-        )
+        progress = format_time(timedelta(milliseconds=playback_item.progress_ms).__str__())
+        duration = format_time(timedelta(milliseconds=track.duration_ms).__str__())
         is_local_track = isinstance(track, model.LocalTrack)
         if track.type == "track":
             artists = ", ".join([artist.name for artist in track.artists]).strip(", ")
