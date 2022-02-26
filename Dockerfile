@@ -17,8 +17,8 @@ RUN ["mkdir", "logs"]
 ENV LOG_DIR=$workdir/logs
 
 #update apt package cache
-RUN ["apt", "update"]
+#RUN ["apt", "update"]
 # install apt dependencies
-RUN ["apt", "install", "-y", "wait-for-it", "git"]
+#RUN ["apt", "install", "-y", "wait-for-it", "git"]
 # install python dependencies
-RUN ["pip", "install", "-r", "requirements.txt"]
+RUN ["pip", "install", "."]
