@@ -89,7 +89,7 @@ class SpotifyUserObject:
                 access_token=self.user_token.access_token,
                 refresh_token=self.user_token.refresh_token,
                 expires_at=self.user_token._token.expires_at,
-                default_device_id=self.default_device_id
+                default_device_id=self.default_device_id,
             )
         )
         db.session.commit()
@@ -105,7 +105,7 @@ class SpotifyUserObject:
                 access_token=self.user_token.access_token,
                 refresh_token=self.user_token.refresh_token,
                 expires_at=self.user_token._token.expires_at,
-                default_device_id=self.default_device_id
+                default_device_id=self.default_device_id,
             )
         )
         db.session.commit()

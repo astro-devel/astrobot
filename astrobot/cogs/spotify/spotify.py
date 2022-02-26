@@ -7,6 +7,7 @@ from discord.ext import commands
 from astrobot.spotify import spotify as sp
 from astrobot.spotify.utils import get_dominant_color
 
+
 class Spotify(commands.Cog):
     # TODO: create decorator(s)
     def __init__(self, bot) -> None:
@@ -19,7 +20,7 @@ class Spotify(commands.Cog):
             "_playback_mgr": self._playback_mgr,
             "_getter": self._getter,
             "_nowplaying": self._nowplaying,
-            "_setter": self._setter
+            "_setter": self._setter,
         }
         self.cached_sessions = dict()
 
@@ -75,7 +76,7 @@ Spotify Module (!sp) Commands:
             return "FNI"
         else:
             return await self._error(ctx, "not_found", "get " + option)
-    
+
     async def _setter(self, ctx, *args):
         user: Optional[sp.SpotifyUserObject] = self.cached_sessions.get(
             ctx.author.id.__str__(),
@@ -87,16 +88,16 @@ Spotify Module (!sp) Commands:
         if option == "device":
             if args[1] == "default":
                 for dev in user.session.playback_devices():
-                    if ' '.join(args[2:]) == dev.name:
+                    if " ".join(args[2:]) == dev.name:
                         user.default_device_id = dev.id
                         user.update_db()
                         return f"Successfully set default device to: {dev.name}"
-                return # fail
+                return  # fail
             else:
                 return
         else:
             print(args)
-            return await self._error(ctx, "not_found", "set " + ' '.join(args))
+            return await self._error(ctx, "not_found", "set " + " ".join(args))
 
     async def _nowplaying(self, ctx, *args):
         user: Optional[sp.SpotifyUserObject] = self.cached_sessions.get(
@@ -151,7 +152,10 @@ Spotify Module (!sp) Commands:
         embed = discord.Embed(colour=get_dominant_color(album_art)).add_field(
             name=f"{progress_bar}\n\
 \a\a\a\a\a\a\a\a\a\a\a\a\a\a\a{progress}/{duration}\a\a{'▶️' if playback_item.is_playing else '⏸'}",
-            value=f"[{track.name}]({track_url})\n[**{artists}**]({show_artist_url})" + (f" | *{album_name}*" if album_name else "") if not is_local_track else f"{track.name}\n**{artists}**",
+            value=f"[{track.name}]({track_url})\n[**{artists}**]({show_artist_url})"
+            + (f" | *{album_name}*" if album_name else "")
+            if not is_local_track
+            else f"{track.name}\n**{artists}**",
         )
         embed.set_author(
             name=f"{'Now Playing'} - {ctx.author.nick if ctx.author.nick else ctx.author.name}",
@@ -196,7 +200,9 @@ Spotify Module (!sp) Commands:
             try:
                 user.session.playback_start_tracks([track.id])
             except NotFound:
-                user.session.playback_start_tracks([track.id], device_id=user.default_device_id)
+                user.session.playback_start_tracks(
+                    [track.id], device_id=user.default_device_id
+                )
             track_name = track.name.replace("*", "\*")
             return f"Playing **{track_name}** by **{track.artists[0].name}**..."
         else:
