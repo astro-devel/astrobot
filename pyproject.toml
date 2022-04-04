@@ -11,14 +11,14 @@ psycopg2-binary = "^2.9.3"
 py-cord = "2.0.0b4"
 python-dateutil = "^2.8.2"
 tekore = "^4.2.0"
-python-dotenv = "^0.19.2"
+python-dotenv = "^0.20.0"
 geopy = {version="^2.2.0", extras=['timezone']}
 arrow = "^1.2.2"
 colorthief = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.12.2"
-mypy = "^0.931"
+mypy = "^0.942"
 scalene = "^1.4.2"
 radon = "^5.1.0"
 sqlalchemy-stubs = "^0.4"
