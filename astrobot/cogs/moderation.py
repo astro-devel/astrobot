@@ -1,6 +1,8 @@
+import re
 import time
 import datetime
 import string
+from typing import List, Optional
 import discord
 import sqlalchemy as sql
 from discord.ext import commands
@@ -366,6 +368,36 @@ class Moderation(commands.Cog):
                 colour=self.bot.colors.green,
             )
         )
+        return
+
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def lock(self, ctx, *, channels: Optional[str]):
+        l = await ctx.guild.fetch_roles()
+        if channels:
+            channels = re.sub('[#<>]', '', channels).split()
+        else:
+            channels = [ctx.channel]
+        
+        for c in channels:
+            channel = ctx.guild.get_channel(int(c))
+            await channel.set_permissions(l[0], send_messages=False)
+            await ctx.send(f"Successfully locked down {channel.mention}.")
+        return
+    
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def unlock(self, ctx, *, channels: Optional[str]):
+        l = await ctx.guild.fetch_roles()
+        if channels:
+            channels = re.sub('[#<>]', '', channels).split()
+        else:
+            channels = [ctx.channel]
+        
+        for c in channels:
+            channel = ctx.guild.get_channel(int(c))
+            await channel.set_permissions(l[0], send_messages=True)
+            await ctx.send(f"Successfully unlocked {channel.mention}.")
         return
 
     @commands.command()

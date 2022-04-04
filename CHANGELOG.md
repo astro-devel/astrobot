@@ -1,3 +1,7 @@
+# 22.4.1
+- [ FEATURE ] create !lock and !unlock commands
+    - locks/unlocks specific channel(s) to keep non-admins from sending msgs in channels
+
 # 22.2.4.patch1
 - [ BUG_FIX ] fix time for '!sp nowplaying' when length is over 1 hour
 
