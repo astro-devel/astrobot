@@ -17,7 +17,7 @@ arrow = "^1.2.2"
 colorthief = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.12.2"
+pylint = "^2.14.5"
 mypy = "^0.942"
 scalene = "^1.4.2"
 radon = "^5.1.0"
